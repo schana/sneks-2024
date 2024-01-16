@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["sneks*"]
+namespaces = true
+
+[tool.setuptools.dynamic]
+version = {file = ["VERSION.txt"]}
+
+[project]
+name = "sneks2024"
+dynamic = ["version"]
+description = "Sneks"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "Apache Software License"}
+authors = [
+    {name = "Nathaniel Schaaf", email = "nathaniel.schaaf@gmail.com"}
+]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Typing :: Typed",
+]
+dependencies = [
+    "aws-cdk-lib>=2.114",
+    "aws-lambda-powertools[all]>=2.30.2",
+    "boto3",
+    "constructs>=10",
+    "pydantic",
+]
+
+[project.scripts]
+cdk-app = "sneks2024.infrastructure.app:main"
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "boto3-stubs-lite[essential]",
+    "isort",
+    "moto",
+    "mypy",
+    "pytest",
+    "pytest-cov",
+    "tox",
+    "build",
+    "twine",
+]
+
+[tool.black]
+extend-exclude = "src/webapp"
+
+[tool.isort]
+profile = "black"
+known_first_party = "sneks2024"
+skip_glob = ["src/webapp"]
+
