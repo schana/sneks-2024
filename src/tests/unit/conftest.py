@@ -2,7 +2,7 @@ import aws_cdk as core
 import aws_cdk.assertions as assertions
 import pytest
 
-from sneks2024.infrastructure.application.stack import Sneks2024
+from sneks.infrastructure.processor.stack import Sneks
 
 
 @pytest.fixture
@@ -16,11 +16,11 @@ def app() -> core.App:
 
 
 @pytest.fixture
-def stack(app: core.App) -> Sneks2024:
-    stack = Sneks2024(app, "sneks")
+def stack(app: core.App) -> Sneks:
+    stack = Sneks(app, "sneks")
     return stack
 
 
 @pytest.fixture
-def template(stack: Sneks2024) -> assertions.Template:
+def template(stack: Sneks) -> assertions.Template:
     return assertions.Template.from_stack(stack)

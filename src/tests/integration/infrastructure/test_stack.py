@@ -3,7 +3,7 @@ import os
 import boto3
 from mypy_boto3_cloudformation import CloudFormationClient
 
-from sneks2024.infrastructure.pipeline.stack import STACK_NAME_KEY
+from sneks.infrastructure.pipeline.stack import STACK_NAME_KEY
 
 
 def test_stack_deployed() -> None:

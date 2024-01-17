@@ -11,7 +11,7 @@ namespaces = true
 version = {file = ["VERSION.txt"]}
 
 [project]
-name = "sneks2024"
+name = "sneks"
 dynamic = ["version"]
 description = "Sneks"
 readme = "README.md"
@@ -35,7 +35,7 @@ dependencies = [
 ]
 
 [project.scripts]
-cdk-app = "sneks2024.infrastructure.app:main"
+cdk-app = "sneks.infrastructure.app:main"
 
 [project.optional-dependencies]
 dev = [
@@ -50,12 +50,19 @@ dev = [
     "build",
     "twine",
 ]
+gui = [
+    "pygame>=2.5.2",
+]
+record = [
+    "pygame>=2.5.2",
+    "moviepy",
+]
 
 [tool.black]
 extend-exclude = "src/webapp"
 
 [tool.isort]
 profile = "black"
-known_first_party = "sneks2024"
+known_first_party = "sneks"
 skip_glob = ["src/webapp"]
 
