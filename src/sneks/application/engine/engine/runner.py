@@ -10,8 +10,8 @@ def main() -> Optional[List[NormalizedScore]]:
     state = State()
     state.reset()
     if config.graphics.display:
-        from sneks.gui.graphics import Painter
-        from sneks.gui.recorder import Recorder
+        from sneks.application.engine.gui.graphics import Painter
+        from sneks.application.engine.gui.recorder import Recorder
 
         recorder = Recorder() if config.graphics.record else None
         painter = Painter(recorder=recorder)

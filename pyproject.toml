@@ -36,6 +36,9 @@ dependencies = [
 
 [project.scripts]
 cdk-app = "sneks.infrastructure.app:main"
+validate = "sneks.application.engine.validator.main:main"
+run = "sneks.application.engine.engine.runner:main"
+poster = "sneks.application.engine.gui.poster:main"
 
 [project.optional-dependencies]
 dev = [
