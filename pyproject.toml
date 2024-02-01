@@ -27,7 +27,8 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "aws-cdk-lib>=2.114",
+    "aws-cdk-lib>=2.125",
+    "aws-cdk.aws-cognito-identitypool-alpha",
     "aws-lambda-powertools[all]>=2.30.2",
     "boto3",
     "constructs>=10",
@@ -68,4 +69,3 @@ extend-exclude = "src/webapp"
 profile = "black"
 known_first_party = "sneks"
 skip_glob = ["src/webapp"]
-

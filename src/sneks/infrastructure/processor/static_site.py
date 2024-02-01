@@ -1,4 +1,4 @@
-from aws_cdk import CfnOutput, Duration, RemovalPolicy
+from aws_cdk import CfnOutput, Duration
 from aws_cdk import aws_certificatemanager as certificate_manager
 from aws_cdk import aws_cloudfront as cloudfront
 from aws_cdk import aws_cloudfront_origins as cloudfront_origins

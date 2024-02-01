@@ -4,7 +4,7 @@ import subprocess
 
 import requests
 
-import sneks
+from sneks.application import engine
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
 
 
 def build_docs():
-    sneks_path = str(pathlib.Path(sneks.__file__).resolve().parent)
+    sneks_path = str(pathlib.Path(engine.__file__).resolve().parent)
     subprocess.run(
         [
             "sphinx-apidoc",
