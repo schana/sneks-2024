@@ -39,7 +39,9 @@ export default function Files({ colorMode, prefix }) {
     });
     Storage.list("", { pageSize: "ALL", level: "protected" })
       .then((result) => {
-        result.results = result.results.filter(e => !e.key.endsWith("user_info.py"));
+        result.results = result.results.filter(
+          (e) => !e.key.endsWith("user_info.py")
+        );
         result.results.sort((a, b) => b.key.localeCompare(a.key));
         if (prefix !== "private/") {
           const groups = Array.from(

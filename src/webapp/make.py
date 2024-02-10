@@ -4,7 +4,7 @@ import subprocess
 
 import requests
 
-from sneks.application import engine
+import sneks
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
 
 
 def build_docs():
-    sneks_path = str(pathlib.Path(engine.__file__).resolve().parent)
+    sneks_path = str(sneks.__path__._path[0])
     subprocess.run(
         [
             "sphinx-apidoc",
@@ -27,11 +27,15 @@ def build_docs():
             "-o",
             "modules",
             sneks_path,
-            f"{sneks_path}/engine",
-            f"{sneks_path}/gui",
-            f"{sneks_path}/validator",
-            f"{sneks_path}/config",
-            f"{sneks_path}/template",
+            f"{sneks_path}/submission",
+            f"{sneks_path}/infrastructure",
+            f"{sneks_path}/application/api",
+            f"{sneks_path}/application/backend",
+            f"{sneks_path}/application/engine/engine",
+            f"{sneks_path}/application/engine/gui",
+            f"{sneks_path}/application/engine/validator",
+            f"{sneks_path}/application/engine/config",
+            f"{sneks_path}/application/engine/template",
         ]
     )
     subprocess.run(["sphinx-build", "-b", "html", ".", "build/docs"])
