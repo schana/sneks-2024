@@ -6,7 +6,7 @@ try:
     import pygame.image
     from pygame import Surface
 except ModuleNotFoundError:
-    pygame = object()
+    pygame = object()  # type: ignore
 
 from sneks.application.engine.config.config import config
 
@@ -32,7 +32,7 @@ class Recorder:
         self.i += 1
 
     def animate_game(self):
-        import moviepy.video.io.ImageSequenceClip
+        import moviepy.video.io.ImageSequenceClip  # type: ignore
 
         images = sorted(
             [str(i) for i in self.prefix.glob(f"pics/pic_{self.identifier}_*.png")]

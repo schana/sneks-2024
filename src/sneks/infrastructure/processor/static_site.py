@@ -11,8 +11,6 @@ from constructs import Construct
 
 
 class StaticSite(Construct):
-    distribution: cloudfront.Distribution = None
-
     def __init__(
         self,
         scope: Construct,
@@ -54,7 +52,7 @@ class StaticSite(Construct):
             self,
             "StaticSiteDeployment",
             destination_bucket=static_site_bucket,
-            sources=[s3_deployment.Source.asset("app/sneks/build")],
+            sources=[s3_deployment.Source.asset("src/webapp/build")],
             retain_on_delete=False,
             distribution=self.distribution,
             exclude=["games/*"],

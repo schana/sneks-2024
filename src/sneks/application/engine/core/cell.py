@@ -45,7 +45,7 @@ class Cell:
     row: int  #:
     column: int  #:
 
-    @cache
+    @cache  # type: ignore
     def __new__(cls, row: int, column: int) -> "Cell":
         return super().__new__(cls)
 

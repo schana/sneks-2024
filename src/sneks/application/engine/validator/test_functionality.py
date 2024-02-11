@@ -6,7 +6,7 @@ from sneks.application.engine.engine.mover import NormalizedScore
 from sneks.application.engine.interface.snek import Snek
 
 
-def test_basic_functionality():
+def test_basic_functionality() -> None:
     submissions = registrar.get_submissions()
     assert 1 == len(submissions)
     snek: Snek = submissions[0].snek
@@ -16,10 +16,12 @@ def test_basic_functionality():
     assert snek.get_next_direction() in Direction
 
 
-def test_extended_functionality():
+def test_extended_functionality() -> None:
+    assert config.graphics is not None
     config.graphics.display = False
     config.turn_limit = 100
     scores = runner.main()
+    assert scores is not None
     assert len(scores) == 10
     for score in scores:
         assert isinstance(score, NormalizedScore)
@@ -31,10 +33,12 @@ def test_extended_functionality():
         assert score.raw.ended == 0
 
 
-def test_multiple_functionality():
+def test_multiple_functionality() -> None:
+    assert config.graphics is not None
     config.graphics.display = False
     config.registrar_submission_sneks = 100
     scores = runner.main()
+    assert scores is not None
     assert len(scores) == 1000
     for score in scores:
         assert isinstance(score, NormalizedScore)

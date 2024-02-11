@@ -9,11 +9,13 @@ def main() -> Optional[List[NormalizedScore]]:
     runs = 0
     state = State()
     state.reset()
-    if config.graphics.display:
+    if config.graphics is not None and config.graphics.display:
         from sneks.application.engine.gui.graphics import Painter
         from sneks.application.engine.gui.recorder import Recorder
 
-        recorder = Recorder() if config.graphics.record else None
+        recorder = None
+        if config.graphics is not None and config.graphics.record:
+            recorder = Recorder()
         painter = Painter(recorder=recorder)
         painter.initialize()
         while runs < config.runs:
@@ -30,7 +32,7 @@ def main() -> Optional[List[NormalizedScore]]:
                 state.step()
             else:
                 print(f"Run complete: {runs}")
-                if config.graphics.record:
+                if recorder is not None:
                     recorder.animate_game()
                     recorder.reset()
                 normalized = state.report()
@@ -39,6 +41,7 @@ def main() -> Optional[List[NormalizedScore]]:
                 painter.end_delay()
                 runs += 1
                 state.reset()
+        return None
     else:
         scores = []
         while runs < config.runs:

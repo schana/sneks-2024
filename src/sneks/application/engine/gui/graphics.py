@@ -5,11 +5,15 @@ import sys
 
 try:
     import pygame
+    from pygame import Surface
 except ModuleNotFoundError:
-    pygame = object()
+    pygame = object  # type: ignore
+    Surface = object  # type: ignore
 
 from sneks.application.engine.config.config import config
 from sneks.application.engine.gui.recorder import Recorder
+
+assert config.graphics is not None
 
 ROWS = config.game.rows
 COLUMNS = config.game.columns
@@ -25,9 +29,9 @@ WIDTH = (2 + COLUMNS) * CELL_SIZE + COLUMNS * PADDING
 
 
 class Painter:
-    screen = None
+    screen: Surface | None = None
 
-    def __init__(self, recorder: Recorder = None):
+    def __init__(self, recorder: Recorder | None = None):
         self.recorder = recorder
 
     def initialize(self):
@@ -47,6 +51,7 @@ class Painter:
         self.screen.blit(surface, rect)
 
     def draw_snake(self, cells, alive, color: tuple[int, int, int]):
+        assert self.screen is not None
         surface = pygame.Surface((CELL_SIZE - PADDING, CELL_SIZE - PADDING))
         fill_horizontal = pygame.Surface((PADDING * 2, CELL_SIZE - PADDING))
         fill_vertical = pygame.Surface((CELL_SIZE - PADDING, PADDING * 2))

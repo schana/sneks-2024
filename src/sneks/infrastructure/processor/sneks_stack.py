@@ -322,7 +322,7 @@ class SneksStack(Stack):
             self, "Workflow", definition=definition, timeout=Duration.minutes(10)
         )
 
-    def get_buckets(self) -> (s3.Bucket, s3.Bucket, s3.Bucket):
+    def get_buckets(self) -> tuple[s3.Bucket, s3.Bucket, s3.Bucket]:
         submission_bucket = s3.Bucket(
             self,
             "SubmissionBucket",
@@ -463,7 +463,7 @@ class SneksStack(Stack):
             self,
             name,
             code=lambda_.DockerImageCode.from_image_asset(
-                directory="app/processor",
+                directory="src/sneks/application/backend",
                 entrypoint=entrypoint,
                 cmd=[f"main.{handler}"],
             ),

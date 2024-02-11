@@ -16,7 +16,7 @@ class State:
         Cell(r, c)
         for r, c in itertools.product(range(board.ROWS), range(board.COLUMNS))
     }
-    food: Set[Cell] = []
+    food: Set[Cell] = set()
     active_snakes: List[Mover] = []
     ended_snakes: List[Mover] = []
     steps: int = 0
@@ -82,10 +82,12 @@ class State:
         else:
             return None
 
-    def get_occupied_cells(self, snakes: List[Mover] = None) -> FrozenSet[Cell]:
+    def get_occupied_cells(self, snakes: List[Mover] | None = None) -> FrozenSet[Cell]:
         if snakes is None:
-            snakes = itertools.chain(self.active_snakes, self.ended_snakes)
-        return frozenset(itertools.chain(*(s.cells for s in snakes)))
+            values = itertools.chain(self.active_snakes, self.ended_snakes)
+            return frozenset(itertools.chain(*(s.cells for s in values)))
+        else:
+            return frozenset(itertools.chain(*(s.cells for s in snakes)))
 
     def count_occupied_cells(self) -> Counter:
         return Counter(itertools.chain(*(s.cells for s in self.active_snakes)))

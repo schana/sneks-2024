@@ -44,7 +44,7 @@ poster = "sneks.application.engine.gui.poster:main"
 [project.optional-dependencies]
 dev = [
     "black",
-    "boto3-stubs-lite[essential]",
+    "boto3-stubs-lite[essential,sns,stepfunctions]",
     "isort",
     "moto",
     "mypy",
@@ -54,6 +54,7 @@ dev = [
     "build",
     "twine",
     "requests",
+    "types-requests",
     "sphinx",
     "sphinx-rtd-theme",
     "myst-parser",

@@ -5,7 +5,6 @@ import sys
 from dataclasses import dataclass
 from importlib.machinery import ModuleSpec
 from types import ModuleType
-from typing import Dict, List, Optional
 
 from sneks.application.engine.config.config import config
 from sneks.application.engine.interface.snek import Snek
@@ -17,19 +16,19 @@ class Submission:
     snek: Snek
 
 
-def get_submissions() -> List[Submission]:
-    sneks: List[Submission] = []
+def get_submissions() -> list[Submission]:
+    sneks: list[Submission] = []
     snek_classes = get_submission_classes()
     for name, snek in snek_classes.items():
         if config.registrar_submission_sneks > 1:
             for i in range(config.registrar_submission_sneks):
-                sneks.append(Submission(f"{name}{i}", snek()))
+                sneks.append(Submission(f"{name}{i}", snek()))  # type: ignore
         else:
-            sneks.append(Submission(name, snek()))
+            sneks.append(Submission(name, snek()))  # type: ignore
     return sneks
 
 
-def get_submission_classes() -> Dict[str, Snek.__class__]:
+def get_submission_classes() -> dict[str, Snek]:
     results = {}
     submissions = set(
         p.parent
@@ -37,21 +36,22 @@ def get_submission_classes() -> Dict[str, Snek.__class__]:
     )
     for submission in submissions:
         name, snek = get_custom_snek(submission)
-        if snek is not None:
+        if name is not None and snek is not None:
             results[name] = snek
     return results
 
 
-def get_custom_snek(prefix: pathlib.Path) -> (Optional[str], Optional[Snek]):
+def get_custom_snek(prefix: pathlib.Path) -> tuple[str | None, Snek | None]:
     name, module = load_module(prefix)
     if module is None:
         return None, None
     return name, module.CustomSnek
 
 
-def load_module(prefix: pathlib.Path) -> (Optional[str], Optional[ModuleType]):
+def load_module(prefix: pathlib.Path) -> tuple[str | None, ModuleType | None]:
     name, spec, module = get_module(prefix)
-    if module is not None:
+    if name is not None and spec is not None and module is not None:
+        assert spec.loader is not None
         spec.loader.exec_module(module)
         sys.modules[name] = module
     return name, module
@@ -59,24 +59,24 @@ def load_module(prefix: pathlib.Path) -> (Optional[str], Optional[ModuleType]):
 
 def get_module(
     prefix: pathlib.Path,
-) -> (Optional[str], Optional[ModuleSpec], Optional[ModuleType]):
+) -> tuple[str | None, ModuleSpec | None, ModuleType | None]:
     submission = get_submission(prefix)
     if submission is None:
         return None, None, None
     name = get_submission_name(submission)
     spec = importlib.util.spec_from_file_location(name, submission)
-    module = importlib.util.module_from_spec(spec)
+    module = importlib.util.module_from_spec(spec) if spec is not None else None
     return name, spec, module
 
 
-def get_submission(prefix: pathlib.Path) -> Optional[pathlib.Path]:
+def get_submission(prefix: pathlib.Path) -> pathlib.Path | None:
     files = get_submission_files(prefix)
     if files:
         return files[0]
     return None
 
 
-def get_submission_files(prefix: pathlib.Path) -> List[pathlib.Path]:
+def get_submission_files(prefix: pathlib.Path) -> list[pathlib.Path]:
     suffix = "submission.py"
     return list(prefix.glob(f"**/{suffix}"))
 
