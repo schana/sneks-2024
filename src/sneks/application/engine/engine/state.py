@@ -95,9 +95,20 @@ class State:
     def set_board(self):
         occupied = self.get_occupied_cells()
         for current_snake in self.active_snakes:
-            current_snake.snek.body = list(current_snake.cells)
-            current_snake.snek.food = frozenset(self.food)
-            current_snake.snek.occupied = occupied.copy()
+            head = current_snake.cells[0]
+            current_snake.snek.body = list(
+                cell.get_relative_to(head) for cell in current_snake.cells
+            )
+            current_snake.snek.food = frozenset(
+                cell.get_relative_to(head)
+                for cell in self.food
+                if cell.get_distance(head) <= config.game.smell_range
+            )
+            current_snake.snek.occupied = frozenset(
+                cell.get_relative_to(head)
+                for cell in occupied
+                if cell.get_distance(head) <= config.game.vision_range
+            )
 
     def should_continue(self, turn_limit):
         return self.steps < turn_limit and self.active_snakes
@@ -132,9 +143,7 @@ class State:
         to_end = []
         # determine ended snakes
         for snake in self.active_snakes:
-            if not snake.get_head().is_valid():
-                to_end.append(snake)
-            elif snake.get_head() in ended_cells:
+            if snake.get_head() in ended_cells:
                 to_end.append(snake)
             elif occupations[snake.get_head()] > 1:
                 to_end.append(snake)

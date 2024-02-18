@@ -1,7 +1,6 @@
 import abc
 from typing import FrozenSet, List, Sequence
 
-from sneks.application.engine.core.board import COLUMNS, ROWS
 from sneks.application.engine.core.cell import Cell
 from sneks.application.engine.core.direction import Direction
 
@@ -62,22 +61,6 @@ class Snek(abc.ABC):
         """
         return self.occupied
 
-    def get_rows(self) -> int:
-        """
-        Helper method to return the number of rows in the game board.
-
-        :return: the number of rows in the game board
-        """
-        return ROWS
-
-    def get_columns(self) -> int:
-        """
-        Helper method to return the number of columns in the game board.
-
-        :return: the number of columns in the game board
-        """
-        return COLUMNS
-
     def get_food(self) -> FrozenSet[Cell]:
         """
         Helper method to return the current food on the board.
@@ -111,7 +94,7 @@ class Snek(abc.ABC):
         current = self.get_head().get_neighbor(direction)
         current_distance = 1
 
-        while current not in self.occupied and current.is_valid():
+        while current not in self.occupied:
             current = current.get_neighbor(direction)
             current_distance += 1
 

@@ -55,7 +55,7 @@ class Mover:
 
     def move(self):
         next_direction = self.snek.get_next_direction()
-        next_head = self.get_head().get_neighbor(next_direction)
+        next_head = self.get_head()._get_neighbor(next_direction)
         self.cells.appendleft(next_head)
 
     def move_tail(self, food: Set[Cell]):

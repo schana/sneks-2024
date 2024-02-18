@@ -8,6 +8,9 @@ class Game:
     columns: int = 90
     dynamic_food: bool = False
     food: int = 40
+    smell_range: int = 40
+    vision_range: int = 10
+    sense_range: int = 2
 
 
 @dataclass

@@ -24,15 +24,6 @@ class Cell:
     >>> cell.get_neighbor(Direction.DOWN)
     Cell(2, 1)
 
-    Also, it can be used to check game board boundaries, like:
-
-    >>> cell = Cell(1, 1)
-    >>> cell.is_valid()
-    True
-    >>> cell = Cell(-1, 0)
-    >>> cell.is_valid()
-    False
-
     Finally, it can be used to calculate distance between cells:
 
     >>> cell_a = Cell(0, 0)
@@ -60,7 +51,39 @@ class Cell:
         :param column_offset: the amount to offset this cell's column by
         :return: the cell at ``(self.row + row_offset, self.column + column_offset)``
         """
-        return Cell(self.row + row_offset, self.column + column_offset)
+        return Cell(
+            self.mod((self.row + row_offset), config.game.rows),
+            self.mod((self.column + column_offset), config.game.columns),
+        )
+
+    @staticmethod
+    def mod(n: int, base: int) -> int:
+        # return n % base
+        return n - int(n / base) * base
+
+    def _get_neighbor(self, direction: Direction) -> "Cell":
+        row_offset, column_offset = 0, 0
+        if direction is Direction.UP:
+            row_offset = -1
+        elif direction is Direction.DOWN:
+            row_offset = 1
+        elif direction is Direction.LEFT:
+            column_offset = -1
+        elif direction is Direction.RIGHT:
+            column_offset = 1
+        else:
+            raise ValueError("direction not valid")
+        return Cell(
+            (self.row + row_offset) % config.game.rows,
+            (self.column + column_offset) % config.game.columns,
+        )
+
+    def get_relative_to(self, other: "Cell") -> "Cell":
+        """
+        Returns the relative cell in relation to "other". Other is likely the head when this is called,
+        since that's what the coordinates are referenced on for the snek implementation.
+        """
+        return Cell(self.row - other.row, self.column - other.column)
 
     def get_neighbor(self, direction: Direction) -> "Cell":
         """
@@ -68,7 +91,7 @@ class Cell:
         not perform any boundary checking and could return invalid cells.
 
         :param direction: the direction of the neighbor
-        :return: the neighbor cell in the specified direction
+        :return: cell in the specified direction
         """
         if direction is Direction.UP:
             return self.get_up()
@@ -112,14 +135,16 @@ class Cell:
         :param other: cell to get distance to
         :return: distance between the two cells
         """
-        return math.hypot(self.column - other.column, self.row - other.row)
+        column_dist = abs(self.column - other.column)
+        row_dist = abs(self.row - other.row)
 
-    def is_valid(self) -> bool:
-        """
-        Checks if this cell is within the game board.
-
-        :return: True if the cell is in the board, False otherwise
-        """
-        return (
-            0 <= self.row < config.game.rows and 0 <= self.column < config.game.columns
+        d_column = (
+            column_dist
+            if column_dist < config.game.columns / 2
+            else config.game.columns - column_dist
         )
+        d_row = (
+            row_dist if row_dist < config.game.rows / 2 else config.game.rows - row_dist
+        )
+
+        return math.sqrt(d_column**2 + d_row**2)
