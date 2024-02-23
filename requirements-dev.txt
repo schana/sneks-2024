@@ -1,0 +1,14 @@
+black
+boto3-stubs-lite[essential,sns,stepfunctions]
+isort
+moto
+mypy
+pytest
+tox
+build
+twine
+requests
+types-requests
+sphinx
+sphinx-rtd-theme
+myst-parser

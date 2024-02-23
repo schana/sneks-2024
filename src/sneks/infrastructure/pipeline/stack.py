@@ -9,7 +9,7 @@ from aws_cdk import pipelines
 from constructs import Construct
 
 from sneks.infrastructure.pipeline.source import CodeStarSource
-from sneks.infrastructure.processor.stack import Sneks
+from sneks.infrastructure.processor.sneks_stack import SneksStack
 
 RESOURCE_NAME_LENGTH_LIMIT = 30
 STACK_NAME_KEY = "STACK_NAME"
@@ -127,5 +127,5 @@ class DeployStage(Stage):
         env: Optional[cdk.Environment] = None,
     ) -> None:
         super().__init__(scope, construct_id, env=env)
-        stack = Sneks(self, "sneks")
+        stack = SneksStack(self, "sneks")
         self.stack_name = stack.stack_name

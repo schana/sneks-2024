@@ -104,6 +104,14 @@ class State:
                 for cell in self.food
                 if cell.get_distance(head) <= config.game.smell_range
             )
+            if not current_snake.snek.food:
+                current_snake.snek.food = frozenset(
+                    (
+                        min(
+                            self.food, key=lambda food: food.get_distance(head)
+                        ).get_relative_to(head),
+                    )
+                )
             current_snake.snek.occupied = frozenset(
                 cell.get_relative_to(head)
                 for cell in occupied

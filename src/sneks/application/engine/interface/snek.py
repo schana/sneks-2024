@@ -69,37 +69,6 @@ class Snek(abc.ABC):
         """
         return self.food
 
-    def get_closest_food(self) -> Cell:
-        """
-        Get the closest food to the head of the snek from the current set.
-
-        :return: the Cell representing the location of the nearest food
-        """
-        return min(self.food, key=lambda food: food.get_distance(self.get_head()))
-
-    def look(self, direction: Direction) -> int:
-        """
-        Look in a direction from the snek's head and get the distance to the closest obstacle.
-        An obstacle could either be an occupied cell or the game board's border.
-
-        >>> self.get_head()  # the head is in the upper left corner of the board
-        Cell(0, 0)
-        >>> self.look(Direction.LEFT)
-        0
-
-        :param direction: the direction to look
-        :return: the distance until the closest obstacle in the specified direction
-        """
-
-        current = self.get_head().get_neighbor(direction)
-        current_distance = 1
-
-        while current not in self.occupied:
-            current = current.get_neighbor(direction)
-            current_distance += 1
-
-        return current_distance - 1
-
     def get_direction_to_destination(
         self,
         destination: Cell,

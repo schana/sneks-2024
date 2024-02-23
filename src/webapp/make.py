@@ -15,7 +15,7 @@ def main():
 
 
 def build_docs():
-    sneks_path = str(sneks.__path__._path[0])
+    sneks_path = str(sneks.__path__)
     subprocess.run(
         [
             "sphinx-apidoc",

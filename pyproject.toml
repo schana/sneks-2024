@@ -5,14 +5,19 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["sneks*"]
-namespaces = true
 
 [tool.setuptools.dynamic]
 version = {file = ["VERSION.txt"]}
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = {file = ["requirements-dev.txt"]}
+gui = {file = ["requirements-gui.txt"]}
+record = {file = ["requirements-record.txt"]}
 
 [project]
 name = "sneks"
-dynamic = ["version"]
+dynamic = ["version", "dependencies", "optional-dependencies"]
 description = "Sneks"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -26,46 +31,12 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Typing :: Typed",
 ]
-dependencies = [
-    "aws-cdk-lib>=2.125",
-    "aws-cdk.aws-cognito-identitypool-alpha",
-    "aws-lambda-powertools[all]>=2.30.2",
-    "boto3",
-    "constructs>=10",
-    "pydantic",
-]
 
 [project.scripts]
 cdk-app = "sneks.infrastructure.app:main"
 validate = "sneks.application.engine.validator.main:main"
 run = "sneks.application.engine.engine.runner:main"
 poster = "sneks.application.engine.gui.poster:main"
-
-[project.optional-dependencies]
-dev = [
-    "black",
-    "boto3-stubs-lite[essential,sns,stepfunctions]",
-    "isort",
-    "moto",
-    "mypy",
-    "pytest",
-    "pytest-cov",
-    "tox",
-    "build",
-    "twine",
-    "requests",
-    "types-requests",
-    "sphinx",
-    "sphinx-rtd-theme",
-    "myst-parser",
-]
-gui = [
-    "pygame>=2.5.2",
-]
-record = [
-    "pygame>=2.5.2",
-    "moviepy",
-]
 
 [tool.black]
 extend-exclude = "src/webapp"
