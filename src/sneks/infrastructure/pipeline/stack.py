@@ -9,13 +9,12 @@ from aws_cdk import pipelines
 from constructs import Construct
 
 from sneks.infrastructure.pipeline.source import CodeStarSource
-from sneks.infrastructure.processor.sneks_stack import SneksStack
+from sneks.infrastructure.processor.stack import Sneks
 
 RESOURCE_NAME_LENGTH_LIMIT = 30
-STACK_NAME_KEY = "STACK_NAME"
 
 
-class PipelineStack(Stack):
+class Pipeline(Stack):
     """
     This stack establishes a pipeline that builds, deploys, and tests the app
     in a specified account. It uses CodeStar connections to set up a webhook
@@ -114,7 +113,13 @@ class PipelineStack(Stack):
                 "tox -e synth -- -c owner=$OWNER -c repo=$REPO -c branch=$BRANCH -c arn=$ARN",
             ],
             partial_build_spec=codebuild.BuildSpec.from_object(
-                {"phases": {"install": {"runtime-versions": {"python": "3.12"}}}}
+                {
+                    "phases": {
+                        "install": {
+                            "runtime-versions": {"python": "3.12", "nodejs": "20"}
+                        }
+                    }
+                }
             ),
         )
 
@@ -127,5 +132,4 @@ class DeployStage(Stage):
         env: Optional[cdk.Environment] = None,
     ) -> None:
         super().__init__(scope, construct_id, env=env)
-        stack = SneksStack(self, "sneks")
-        self.stack_name = stack.stack_name
+        Sneks(self, "sneks")

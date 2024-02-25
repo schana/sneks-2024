@@ -1,11 +1,11 @@
 import aws_cdk as cdk
 
-from sneks.infrastructure.pipeline.stack import PipelineStack
-from sneks.infrastructure.processor.sneks_stack import SneksStack
+from sneks.infrastructure.pipeline.stack import Pipeline
+from sneks.infrastructure.processor.stack import Sneks
 
 
 def main() -> None:
     app = cdk.App()
-    SneksStack(app, "sneks")
-    PipelineStack(app, "pipeline")
+    Sneks(app, "sneks")
+    Pipeline(app, "pipeline")
     app.synth()

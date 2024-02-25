@@ -17,9 +17,8 @@ class StaticSite(Construct):
         construct_id: str,
         submission_bucket: s3.Bucket,
         static_site_bucket: s3.Bucket,
-        **kwargs,
     ) -> None:
-        super().__init__(scope, construct_id, **kwargs)
+        super().__init__(scope, construct_id)
 
         self.distribution = cloudfront.Distribution(
             self,
@@ -69,7 +68,7 @@ class StaticSite(Construct):
                 reply_to="admin@sneks.dev",
             ),
             user_invitation=cognito.UserInvitationConfig(
-                email_subject="SkillsUSA programming challenge invite",
+                email_subject="Programming challenge invite",
                 email_body=(
                     "<p>Dear {username},</p>"
                     "<p>Welcome to the Sneks programming challenge! "

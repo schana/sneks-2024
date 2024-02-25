@@ -1,0 +1,3 @@
+aws-cdk-lib>=2.125
+aws-cdk.aws-cognito-identitypool-alpha
+constructs>=10
