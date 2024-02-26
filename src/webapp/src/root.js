@@ -5,11 +5,16 @@ import { Authenticator } from "@aws-amplify/ui-react";
 
 import App from "./App";
 
-import { config } from "config/aws-config";
-
-Amplify.configure(config);
-
 export default function Root() {
+  React.useEffect(() => {
+    fetch("aws-config.json")
+      .then((response) => response.json())
+      .then((responseJson) => {
+        Amplify.configure(responseJson);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
     <Authenticator.Provider>
       <App />

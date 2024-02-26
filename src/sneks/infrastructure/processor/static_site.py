@@ -57,7 +57,7 @@ class StaticSite(Construct):
             sources=[s3_deployment.Source.asset("src/webapp/build")],
             retain_on_delete=False,
             distribution=self.distribution,
-            exclude=["games/*", "config/*"],
+            exclude=["games/*", "aws-config.json"],
         )
 
         user_pool = cognito.UserPool(
@@ -123,11 +123,10 @@ class StaticSite(Construct):
             self,
             "amplify-config",
             destination_bucket=static_site_bucket,
-            destination_key_prefix="config/",
             sources=[
-                s3_deployment.Source.data(
-                    object_key="aws-config.js",
-                    data=f"export const config = {json.dumps(amplify_config)};",
+                s3_deployment.Source.json_data(
+                    object_key="aws-config.json",
+                    data=amplify_config,
                 )
             ],
             retain_on_delete=False,
