@@ -1,3 +1,6 @@
+import json
+
+import aws_cdk
 from aws_cdk import CfnOutput, Duration
 from aws_cdk import aws_certificatemanager as certificate_manager
 from aws_cdk import aws_cloudfront as cloudfront
@@ -54,7 +57,7 @@ class StaticSite(Construct):
             sources=[s3_deployment.Source.asset("src/webapp/build")],
             retain_on_delete=False,
             distribution=self.distribution,
-            exclude=["games/*"],
+            exclude=["games/*", "config/*"],
         )
 
         user_pool = cognito.UserPool(
@@ -98,6 +101,37 @@ class StaticSite(Construct):
                     )
                 ],
             ),
+        )
+
+        amplify_config = {
+            "Auth": {
+                "region": aws_cdk.Aws.REGION,
+                "userPoolId": user_pool.user_pool_id,
+                "userPoolWebClientId": user_pool_client.user_pool_client_id,
+                "identityPoolId": identity_pool.identity_pool_id,
+                "mandatorySignIn": True,
+            },
+            "Storage": {
+                "AWSS3": {
+                    "bucket": submission_bucket.bucket_name,
+                    "region": aws_cdk.Aws.REGION,
+                },
+            },
+        }
+
+        s3_deployment.BucketDeployment(
+            self,
+            "amplify-config",
+            destination_bucket=static_site_bucket,
+            destination_key_prefix="config/",
+            sources=[
+                s3_deployment.Source.data(
+                    object_key="aws-config.js",
+                    data=f"export const config = {json.dumps(amplify_config)};",
+                )
+            ],
+            retain_on_delete=False,
+            distribution=self.distribution,
         )
 
         submission_bucket.grant_put(

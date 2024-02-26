@@ -5,7 +5,7 @@ import { Authenticator } from "@aws-amplify/ui-react";
 
 import App from "./App";
 
-import { config } from "./aws-config";
+import { config } from "config/aws-config";
 
 Amplify.configure(config);
 
