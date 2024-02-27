@@ -1,5 +1,3 @@
-import json
-
 import aws_cdk
 from aws_cdk import CfnOutput, Duration
 from aws_cdk import aws_certificatemanager as certificate_manager
@@ -126,7 +124,7 @@ class StaticSite(Construct):
             sources=[
                 s3_deployment.Source.json_data(
                     object_key="aws-config.json",
-                    data=amplify_config,
+                    obj=amplify_config,
                 )
             ],
             retain_on_delete=False,

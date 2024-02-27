@@ -4,13 +4,13 @@ import pytest
 
 from sneks.infrastructure.pipeline.stack import (
     RESOURCE_NAME_LENGTH_LIMIT,
-    PipelineStack,
+    Pipeline,
 )
 
 
 def test_pipeline_is_created() -> None:
     app = core.App()
-    stack = PipelineStack(app, "pipeline")
+    stack = Pipeline(app, "pipeline")
     template = assertions.Template.from_stack(stack)
     template.resource_count_is("AWS::CodePipeline::Pipeline", 1)
 
@@ -27,7 +27,7 @@ def test_pipeline_is_created() -> None:
 )
 def test_pipeline_name_generation_is_not_too_long(branch: str, name: str) -> None:
     app = core.App(context=dict(branch=branch))
-    stack = PipelineStack(app, "pipeline")
+    stack = Pipeline(app, "pipeline")
     assert len(stack.stack_name) <= RESOURCE_NAME_LENGTH_LIMIT
     resource_name = stack.get_resource_name(name)
     assert len(resource_name) <= RESOURCE_NAME_LENGTH_LIMIT
