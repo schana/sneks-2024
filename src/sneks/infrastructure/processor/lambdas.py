@@ -1,39 +1,55 @@
 import inspect
+from collections import namedtuple
 from typing import Any, Callable
 
 import aws_cdk
 from aws_cdk import aws_lambda as lambda_
 from constructs import Construct
 
+Lambdas = namedtuple(
+    "Lambdas",
+    [
+        "notifier",
+        "start_processor",
+        "pre_processor",
+        "validator",
+        "post_validator",
+        "post_validator_reduce",
+        "processor",
+        "recorder",
+        "post_process_save",
+        "post_processor",
+    ],
+)
 
-def get_handler(scope: Construct) -> lambda_.Function:
+
+def get_handler(
+    scope: Construct,
+    name: str,
+    handler: str,
+    timeout: aws_cdk.Duration = aws_cdk.Duration.seconds(3),
+    memory_size: int = 1792,
+    environment: dict[str, str] | None = None,
+) -> lambda_.Function:
     source = lambda_.Code.from_asset("src", exclude=["tests/**", "webapp/**"])
     architecture = lambda_.Architecture.ARM_64
     runtime = lambda_.Runtime.PYTHON_3_12
-    # Get the pre-packaged and optimized layer
-    # https://docs.powertools.aws.dev/lambda/python/latest/#lambda-layer
-    arch_specifier = "-Arm64" if architecture == lambda_.Architecture.ARM_64 else ""
-    powertools_layer = lambda_.LayerVersion.from_layer_version_arn(
-        scope,
-        id="powertools-layer",
-        layer_version_arn=(
-            f"arn:aws:lambda:{aws_cdk.Aws.REGION}:017000801446:layer:AWSLambdaPowertoolsPythonV2"
-            f"{arch_specifier}:58"
-        ),
-    )
 
     return lambda_.Function(
         scope,
-        id="handler",
-        architecture=architecture,
+        id=name,
         runtime=runtime,
-        layers=[powertools_layer],
+        architecture=architecture,
+        timeout=timeout,
+        memory_size=memory_size,
+        layers=[],
+        environment=environment,
         code=source,
-        handler=get_handler_for_function(get_handler_for_function),
+        handler=handler,
     )
 
 
-def get_handler_for_function(function: Callable[[Any], Any]) -> str:
+def get_handler_for_function(function: Callable[..., Any]) -> str:
     module = inspect.getmodule(function)
     if module is None or module.__file__ is None:
         raise ValueError("module not found")

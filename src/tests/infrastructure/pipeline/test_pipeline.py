@@ -2,10 +2,7 @@ import aws_cdk as core
 import aws_cdk.assertions as assertions
 import pytest
 
-from sneks.infrastructure.pipeline.stack import (
-    RESOURCE_NAME_LENGTH_LIMIT,
-    Pipeline,
-)
+from sneks.infrastructure.pipeline.stack import RESOURCE_NAME_LENGTH_LIMIT, Pipeline
 
 
 def test_pipeline_is_created() -> None:
