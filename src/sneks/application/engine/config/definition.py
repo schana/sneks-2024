@@ -7,10 +7,7 @@ class Game:
     rows: int = 60
     columns: int = 90
     dynamic_food: bool = False
-    food: int = 40
-    smell_range: int = 10
-    vision_range: int = 5
-    sense_range: int = 2
+    vision_range: int = 20
 
 
 @dataclass
@@ -18,7 +15,6 @@ class Colors:
     background: Tuple[int, int, int] = (25, 28, 26)
     border: Tuple[int, int, int] = (113, 121, 113)
     invalid: Tuple[int, int, int] = (186, 26, 26)
-    food: Tuple[int, int, int] = (251, 253, 248)
     snake: List[Tuple[int, int, int]] = field(
         default_factory=lambda: [
             (222, 97, 116),
@@ -72,7 +68,7 @@ class Graphics:
     headless: bool = False
     cell_size: int = 8
     padding: int = 1
-    step_delay: int = 40
+    step_delay: int = 10
     step_keypress_wait: bool = False
     end_delay: int = 1000
     end_keypress_wait: bool = False

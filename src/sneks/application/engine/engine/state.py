@@ -16,7 +16,6 @@ class State:
         Cell(r, c)
         for r, c in itertools.product(range(board.ROWS), range(board.COLUMNS))
     }
-    food: Set[Cell] = set()
     active_snakes: List[Mover] = []
     ended_snakes: List[Mover] = []
     steps: int = 0
@@ -25,7 +24,6 @@ class State:
         self.steps = 0
         self.active_snakes = []
         self.ended_snakes = []
-        self.food = set()
         sneks = registrar.get_submissions()
         sneks.sort(key=lambda s: s.name)
         color_index = 0
@@ -42,10 +40,6 @@ class State:
             color_index = (color_index + color_index_delta) % len(
                 config.graphics.colors.snake
             )
-        for _ in range(
-            len(self.active_snakes) if config.game.dynamic_food else config.game.food
-        ):
-            self.food.add(self.get_random_free_cell())
         self.set_board()
 
     def report(self) -> List[NormalizedScore]:
@@ -76,7 +70,7 @@ class State:
         return normalized
 
     def get_random_free_cell(self):
-        options = self.cells.difference(self.get_occupied_cells()).difference(self.food)
+        options = self.cells.difference(self.get_occupied_cells())
         if options:
             return random.choice(tuple(options))
         else:
@@ -99,19 +93,6 @@ class State:
             current_snake.snek.body = list(
                 cell.get_relative_to(head) for cell in current_snake.cells
             )
-            current_snake.snek.food = frozenset(
-                cell.get_relative_to(head)
-                for cell in self.food
-                if cell.get_distance(head) <= config.game.smell_range
-            )
-            if not current_snake.snek.food:
-                current_snake.snek.food = frozenset(
-                    (
-                        min(
-                            self.food, key=lambda food: food.get_distance(head)
-                        ).get_relative_to(head),
-                    )
-                )
             current_snake.snek.occupied = frozenset(
                 cell.get_relative_to(head)
                 for cell in occupied
@@ -129,21 +110,6 @@ class State:
         # move the heads
         for snake in self.active_snakes:
             snake.move()
-
-        # pop the tails unless food is eaten
-        for snake in self.active_snakes:
-            snake.move_tail(food=self.food)
-
-        # replace eaten food
-        for snake in self.active_snakes:
-            if snake.get_head() in self.food:
-                self.food.remove(snake.get_head())
-                if not config.game.dynamic_food or len(self.food) < len(
-                    self.active_snakes
-                ):
-                    next_food = self.get_random_free_cell()
-                    if next_food:
-                        self.food.add(next_food)
 
         occupations = self.count_occupied_cells()
         ended_cells = self.get_occupied_cells(self.ended_snakes)

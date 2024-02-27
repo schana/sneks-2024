@@ -1,6 +1,7 @@
 import abc
 from typing import FrozenSet, List, Sequence
 
+from sneks.application.engine.config.config import config
 from sneks.application.engine.core.cell import Cell
 from sneks.application.engine.core.direction import Direction
 
@@ -15,8 +16,6 @@ class Snek(abc.ABC):
     body: List[Cell] = []
     #: Set of currently occupied cells on the game board
     occupied: FrozenSet[Cell] = frozenset()
-    #: Set of cells that contain food on the game board
-    food: FrozenSet[Cell] = frozenset()
 
     def get_next_direction(self) -> Direction:
         """
@@ -61,13 +60,31 @@ class Snek(abc.ABC):
         """
         return self.occupied
 
-    def get_food(self) -> FrozenSet[Cell]:
+    def look(self, direction: Direction) -> int:
         """
-        Helper method to return the current food on the board.
+        Look in a direction from the snek's head and get the distance to the closest obstacle.
+        An obstacle could either be an occupied cell or the game board's border.
 
-        :return: the set of food on the game board
+        >>> self.get_head()
+        Cell(0, 0)
+        >>> self.look(Direction.LEFT)
+        0
+
+        :param direction: the direction to look
+        :return: the distance until the closest obstacle in the specified direction
         """
-        return self.food
+
+        current = self.get_head().get_neighbor(direction)
+        current_distance = 1
+
+        while (
+            current not in self.occupied
+            and current_distance <= config.game.vision_range
+        ):
+            current = current.get_neighbor(direction)
+            current_distance += 1
+
+        return current_distance - 1
 
     def get_direction_to_destination(
         self,

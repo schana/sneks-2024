@@ -19,7 +19,6 @@ ROWS = config.game.rows
 COLUMNS = config.game.columns
 CELL_SIZE = config.graphics.cell_size
 PADDING = config.graphics.padding
-COLOR_FOOD = config.graphics.colors.food
 COLOR_BORDER = config.graphics.colors.border
 COLOR_BACKGROUND = config.graphics.colors.background
 COLOR_INVALID = config.graphics.colors.invalid
@@ -40,15 +39,6 @@ class Painter:
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Sneks")
-
-    def draw_food(self, food):
-        surface = pygame.Surface((CELL_SIZE - PADDING, CELL_SIZE - PADDING))
-        surface.fill(COLOR_FOOD)
-        rect = surface.get_rect(
-            top=CELL_SIZE + PADDING + food.row * (CELL_SIZE + PADDING),
-            left=CELL_SIZE + PADDING + food.column * (CELL_SIZE + PADDING),
-        )
-        self.screen.blit(surface, rect)
 
     def draw_snake(self, cells, alive, color: tuple[int, int, int]):
         assert self.screen is not None

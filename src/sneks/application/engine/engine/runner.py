@@ -25,8 +25,6 @@ def main() -> Optional[List[NormalizedScore]]:
                 painter.draw_snake(snake.cells, True, snake.color)
             for snake in state.ended_snakes:
                 painter.draw_snake(snake.cells, False, snake.color)
-            for food in state.food:
-                painter.draw_food(food)
             painter.draw()
             if state.should_continue(config.turn_limit):
                 state.step()

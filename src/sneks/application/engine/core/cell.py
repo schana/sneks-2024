@@ -43,6 +43,12 @@ class Cell:
     def __getnewargs__(self):
         return self.row, self.column
 
+    def __eq__(self, other):
+        return hash(self) == hash(other)
+
+    def __hash__(self):
+        return hash((self.row % config.game.rows, self.column % config.game.columns))
+
     def get_relative_neighbor(self, row_offset: int, column_offset: int) -> "Cell":
         """
         Returns the cell with coordinates offset by the specified parameters.
@@ -83,6 +89,10 @@ class Cell:
         Returns the relative cell in relation to "other". Other is likely the head when this is called,
         since that's what the coordinates are referenced on for the snek implementation.
         """
+        return Cell(
+            self.mod((self.row - other.row), config.game.rows),
+            self.mod((self.column - other.column), config.game.columns),
+        )
         return Cell(self.row - other.row, self.column - other.column)
 
     def get_neighbor(self, direction: Direction) -> "Cell":
