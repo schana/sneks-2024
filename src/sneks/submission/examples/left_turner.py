@@ -1,5 +1,5 @@
 from sneks.application.engine.core.direction import Direction
-from sneks.application.engine.template.submission import Snek
+from sneks.application.engine.interface.snek import Snek
 
 
 class CustomSnek(Snek):

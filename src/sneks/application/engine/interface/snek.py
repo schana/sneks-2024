@@ -1,5 +1,5 @@
 import abc
-from typing import FrozenSet, List, Sequence
+from typing import FrozenSet, Sequence
 
 from sneks.application.engine.config.config import config
 from sneks.application.engine.core.cell import Cell
@@ -12,8 +12,8 @@ class Snek(abc.ABC):
     but derivations should implement ``get_next_direction()`` to provide it.
     """
 
-    #: Body of the snek represented as a list of cells, with index 0 being the head
-    body: List[Cell] = []
+    #: Head snek represented as Cell
+    head: Cell = Cell(0, 0)
     #: Set of currently occupied cells on the game board
     occupied: FrozenSet[Cell] = frozenset()
 
@@ -27,24 +27,16 @@ class Snek(abc.ABC):
 
     def get_head(self) -> Cell:
         """
-        Helper method to return the first cell from the snek's body.
+        Helper method to return the head of the snek.
 
-        :return: the cell representing the head of the snake
+        :return: the cell representing the head of the snek
         """
-        return self.body[0]
-
-    def get_body(self) -> List[Cell]:
-        """
-        Helper method to return the snek's body.
-
-        :return: the list of cells making up the snake, including the head
-        """
-        return self.body
+        return self.head
 
     def get_occupied(self) -> FrozenSet[Cell]:
         """
-        Helper method to return all occupied cells on the board. This
-        includes both cells from your snek's body and all other sneks'
+        Helper method to return all occupied cells that the snek can see.
+        This includes both cells from your snek's body and all other sneks'
         bodies.
 
         This can be used in your ``get_next_direction()`` to check if a cell

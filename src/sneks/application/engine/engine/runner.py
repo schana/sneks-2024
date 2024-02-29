@@ -6,6 +6,20 @@ from sneks.application.engine.engine.state import State
 
 
 def main() -> Optional[List[NormalizedScore]]:
+    # import cProfile
+    # import pstats
+    #
+    # pr = cProfile.Profile()
+    # pr.enable()
+
+    return main2()
+
+    # pr.disable()
+    # stats = pstats.Stats(pr)
+    # stats.sort_stats("tottime").print_stats(20)
+
+
+def main2() -> Optional[List[NormalizedScore]]:
     runs = 0
     state = State()
     state.reset()
@@ -22,9 +36,11 @@ def main() -> Optional[List[NormalizedScore]]:
             painter.clear()
             painter.draw_boarders()
             for snake in state.active_snakes:
-                painter.draw_snake(snake.cells, True, snake.color)
+                painter.draw_snake(snake.head, snake.body, True, snake.color)
             for snake in state.ended_snakes:
-                painter.draw_snake(snake.cells, False, snake.color)
+                painter.draw_snake(snake.head, snake.body, False, snake.color)
+            for snake in state.ended_snakes:
+                painter.draw_ended_head(snake.head)
             painter.draw()
             if state.should_continue(config.turn_limit):
                 state.step()

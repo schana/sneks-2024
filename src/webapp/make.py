@@ -15,7 +15,7 @@ def main():
 
 
 def build_docs():
-    sneks_path = str(sneks.__path__)
+    sneks_path = str(pathlib.Path(sneks.__file__).resolve().parent)
     subprocess.run(
         [
             "sphinx-apidoc",
@@ -23,13 +23,11 @@ def build_docs():
             "--module-first",
             "--force",
             "--no-toc",
-            "--implicit-namespaces",
             "-o",
             "modules",
             sneks_path,
             f"{sneks_path}/submission",
             f"{sneks_path}/infrastructure",
-            f"{sneks_path}/application/api",
             f"{sneks_path}/application/backend",
             f"{sneks_path}/application/engine/engine",
             f"{sneks_path}/application/engine/gui",

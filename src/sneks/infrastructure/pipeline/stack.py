@@ -2,10 +2,11 @@ import functools
 import re
 from typing import Optional
 
+import aws_cdk
 import aws_cdk as cdk
 from aws_cdk import Stack, Stage
 from aws_cdk import aws_codebuild as codebuild
-from aws_cdk import pipelines
+from aws_cdk import aws_s3, pipelines
 from constructs import Construct
 
 from sneks.infrastructure.pipeline.source import CodeStarSource
@@ -57,14 +58,27 @@ class Pipeline(Stack):
             description=f"Pipeline for {self.repo} repository on {self.branch} branch",
         )
 
+        cache_bucket = aws_s3.Bucket(
+            self,
+            "cache",
+            removal_policy=aws_cdk.RemovalPolicy.DESTROY,
+            auto_delete_objects=True,
+            lifecycle_rules=[
+                aws_s3.LifecycleRule(
+                    enabled=True,
+                    expiration=aws_cdk.Duration.days(10),
+                )
+            ],
+        )
+
         pipeline = pipelines.CodePipeline(
             self,
             "pipeline",
-            synth=self.get_synth_step(),
+            synth=self.get_synth_step(cache_bucket),
             code_build_defaults=pipelines.CodeBuildOptions(
                 build_environment=codebuild.BuildEnvironment(
                     build_image=codebuild.LinuxBuildImage.STANDARD_7_0,
-                    compute_type=codebuild.ComputeType.SMALL,
+                    compute_type=codebuild.ComputeType.LARGE,
                 )
             ),
         )
@@ -95,7 +109,7 @@ class Pipeline(Stack):
             branch=self.branch,
         )
 
-    def get_synth_step(self) -> pipelines.CodeBuildStep:
+    def get_synth_step(self, cache_bucket: aws_s3.Bucket) -> pipelines.CodeBuildStep:
         return pipelines.CodeBuildStep(
             "synth",
             input=self.get_connection(),
@@ -105,11 +119,12 @@ class Pipeline(Stack):
                 BRANCH=self.branch,
                 ARN=self.arn,
             ),
+            cache=codebuild.Cache.bucket(cache_bucket),
             install_commands=[
                 "pip install tox",
             ],
             commands=[
-                "tox --parallel-no-spinner",
+                "tox --parallel-no-spinner -m build",
                 "tox -e synth -- -c owner=$OWNER -c repo=$REPO -c branch=$BRANCH -c arn=$ARN",
             ],
             partial_build_spec=codebuild.BuildSpec.from_object(
@@ -118,7 +133,10 @@ class Pipeline(Stack):
                         "install": {
                             "runtime-versions": {"python": "3.12", "nodejs": "20"}
                         }
-                    }
+                    },
+                    "cache": {
+                        "paths": ["/root/.cache/pip/**/*"],
+                    },
                 }
             ),
         )

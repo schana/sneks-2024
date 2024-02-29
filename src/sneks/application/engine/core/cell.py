@@ -1,10 +1,6 @@
 import math
 from dataclasses import dataclass
-
-try:
-    from functools import cache
-except ImportError:
-    from functools import lru_cache as cache
+from functools import cache, cached_property
 
 from sneks.application.engine.config.config import config
 from sneks.application.engine.core.direction import Direction
@@ -43,12 +39,19 @@ class Cell:
     def __getnewargs__(self):
         return self.row, self.column
 
-    def __eq__(self, other):
-        return hash(self) == hash(other)
-
-    def __hash__(self):
+    @cached_property
+    def _hash(self):
+        # Determine the hash based on only positive indices,
+        # so hash(Cell(-1,-1)) == hash(Cell(rows, columns))
         return hash((self.row % config.game.rows, self.column % config.game.columns))
 
+    def __eq__(self, other):
+        return self._hash == other._hash
+
+    def __hash__(self):
+        return self._hash
+
+    @cache
     def get_relative_neighbor(self, row_offset: int, column_offset: int) -> "Cell":
         """
         Returns the cell with coordinates offset by the specified parameters.
@@ -57,43 +60,15 @@ class Cell:
         :param column_offset: the amount to offset this cell's column by
         :return: the cell at ``(self.row + row_offset, self.column + column_offset)``
         """
+        # We need to use integer modulus instead of floor to use the sign
+        # of the numerator as opposed to the denominator in order to preserve
+        # the relative direction of the Cell
+        # Effectively: n - int(n / base) * base
+        # Instead of:  n - floor(n / base) * base
         return Cell(
-            self.mod((self.row + row_offset), config.game.rows),
-            self.mod((self.column + column_offset), config.game.columns),
+            int(math.fmod((self.row + row_offset), config.game.rows)),
+            int(math.fmod((self.column + column_offset), config.game.columns)),
         )
-
-    @staticmethod
-    def mod(n: int, base: int) -> int:
-        # return n % base
-        return n - int(n / base) * base
-
-    def _get_neighbor(self, direction: Direction) -> "Cell":
-        row_offset, column_offset = 0, 0
-        if direction is Direction.UP:
-            row_offset = -1
-        elif direction is Direction.DOWN:
-            row_offset = 1
-        elif direction is Direction.LEFT:
-            column_offset = -1
-        elif direction is Direction.RIGHT:
-            column_offset = 1
-        else:
-            raise ValueError("direction not valid")
-        return Cell(
-            (self.row + row_offset) % config.game.rows,
-            (self.column + column_offset) % config.game.columns,
-        )
-
-    def get_relative_to(self, other: "Cell") -> "Cell":
-        """
-        Returns the relative cell in relation to "other". Other is likely the head when this is called,
-        since that's what the coordinates are referenced on for the snek implementation.
-        """
-        return Cell(
-            self.mod((self.row - other.row), config.game.rows),
-            self.mod((self.column - other.column), config.game.columns),
-        )
-        return Cell(self.row - other.row, self.column - other.column)
 
     def get_neighbor(self, direction: Direction) -> "Cell":
         """
@@ -145,16 +120,22 @@ class Cell:
         :param other: cell to get distance to
         :return: distance between the two cells
         """
-        column_dist = abs(self.column - other.column)
-        row_dist = abs(self.row - other.row)
 
-        d_column = (
-            column_dist
-            if column_dist < config.game.columns / 2
-            else config.game.columns - column_dist
+        # Get raw distance
+        column_distance = abs(self.column - other.column)
+        row_distance = abs(self.row - other.row)
+
+        # Determine if it's closer to go the other way
+        column_distance = (
+            column_distance
+            if column_distance < config.game.columns / 2
+            else config.game.columns - column_distance
         )
-        d_row = (
-            row_dist if row_dist < config.game.rows / 2 else config.game.rows - row_dist
+        row_distance = (
+            row_distance
+            if row_distance < config.game.rows / 2
+            else config.game.rows - row_distance
         )
 
-        return math.sqrt(d_column**2 + d_row**2)
+        # Compute the distance
+        return math.sqrt(column_distance**2 + row_distance**2)

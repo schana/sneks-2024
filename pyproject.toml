@@ -5,6 +5,7 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["sneks*"]
+namespaces = false
 
 [tool.setuptools.dynamic]
 version = {file = ["VERSION.txt"]}
@@ -19,7 +20,7 @@ infra = {file = ["requirements-infra.txt"]}
 [project]
 name = "sneks"
 dynamic = ["version", "dependencies", "optional-dependencies"]
-description = "Sneks"
+description = "Sneks on a Toroidal Plane"
 readme = "README.md"
 requires-python = ">=3.12"
 license = {text = "Apache Software License"}

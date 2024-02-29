@@ -23,9 +23,7 @@ else:
     BucketObjectsCollection = object
 
 
-Score = namedtuple(
-    "Score", ["name", "age", "length", "ended", "age1", "length1", "ended1"]
-)
+Score = namedtuple("Score", ["name", "age", "ended", "age1", "ended1"])
 
 working_dir_root = "/tmp"
 registrar_prefix = f"{working_dir_root}/submitted"
@@ -105,10 +103,8 @@ def run_scoring() -> list[Score]:
         Score(
             name=s.raw.name,
             age=s.raw.age,
-            length=s.raw.length,
             ended=s.raw.ended,
             age1=s.age,
-            length1=s.length,
             ended1=s.ended,
         )
         for s in normalized_scores
@@ -136,10 +132,8 @@ def aggregate_scores(scores: list[Score]) -> list[Score]:
         aggregation[name] = Score(
             name=name,
             age=score.age / count,
-            length=score.length / count,
             ended=score.ended / count,
             age1=score.age1 / count,
-            length1=score.length1 / count,
             ended1=score.ended1 / count,
         )
 
@@ -184,9 +178,7 @@ def save_manifest(
         "videos": [f"https://www.sneks.dev/games/{video}" for video in video_names],
         "scores": [
             score._asdict()
-            for score in sorted(
-                scores, key=lambda s: s.age1 + s.length1 + s.ended1, reverse=True
-            )
+            for score in sorted(scores, key=lambda s: s.age1 + s.ended1, reverse=True)
         ],
         "colors": color_map,
         "timestamp": timestamp,

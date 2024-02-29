@@ -5,25 +5,28 @@ from operator import methodcaller
 from typing import FrozenSet, List, Set
 
 from sneks.application.engine.config.config import config
-from sneks.application.engine.core import board
 from sneks.application.engine.core.cell import Cell
-from sneks.application.engine.engine import registrar
+from sneks.application.engine.engine import cells, registrar
 from sneks.application.engine.engine.mover import Mover, NormalizedScore, Score
 
 
 class State:
     cells: Set[Cell] = {
         Cell(r, c)
-        for r, c in itertools.product(range(board.ROWS), range(board.COLUMNS))
+        for r, c in itertools.product(
+            range(config.game.rows), range(config.game.columns)
+        )
     }
     active_snakes: List[Mover] = []
     ended_snakes: List[Mover] = []
     steps: int = 0
+    occupied: set[Cell] = set()
 
     def reset(self):
         self.steps = 0
         self.active_snakes = []
         self.ended_snakes = []
+        self.occupied = set()
         sneks = registrar.get_submissions()
         sneks.sort(key=lambda s: s.name)
         color_index = 0
@@ -42,23 +45,35 @@ class State:
             )
         self.set_board()
 
+    def score_sneks_ended(self) -> None:
+        occupations = self.count_occupied_cells()
+        for snake in itertools.chain(self.active_snakes, self.ended_snakes):
+            for cell in snake.cells:
+                if (
+                    occupations[cell] > 1 and cell is not snake.get_head()
+                ):  # second part should be guaranteed
+                    snake.ended += 1
+
+    def count_occupied_cells(self) -> Counter:
+        values = itertools.chain(self.active_snakes, self.ended_snakes)
+        return Counter(itertools.chain(*(s.cells for s in values)))
+
     def report(self) -> List[NormalizedScore]:
+        self.score_sneks_ended()
+
         scores = [
             s.get_score()
             for s in itertools.chain(self.active_snakes, self.ended_snakes)
         ]
         min_age = min(s.age for s in scores)
         max_age = max(s.age for s in scores)
-        min_length = min(s.length for s in scores)
-        max_length = max(s.length for s in scores)
         min_ended = min(s.ended for s in scores)
         max_ended = max(s.ended for s in scores)
 
-        min_score = Score(name="min", age=min_age, length=min_length, ended=min_ended)
+        min_score = Score(name="min", age=min_age, ended=min_ended)
         max_score = Score(
             name="max",
             age=max(min_age + 1, max_age),
-            length=max(min_length + 1, max_length),
             ended=max(min_ended + 1, max_ended),
         )
 
@@ -79,24 +94,33 @@ class State:
     def get_occupied_cells(self, snakes: List[Mover] | None = None) -> FrozenSet[Cell]:
         if snakes is None:
             values = itertools.chain(self.active_snakes, self.ended_snakes)
-            return frozenset(itertools.chain(*(s.cells for s in values)))
+            return frozenset().union(*(s.cells for s in values))
         else:
-            return frozenset(itertools.chain(*(s.cells for s in snakes)))
-
-    def count_occupied_cells(self) -> Counter:
-        return Counter(itertools.chain(*(s.cells for s in self.active_snakes)))
+            return frozenset().union(*(s.cells for s in snakes))
 
     def set_board(self):
-        occupied = self.get_occupied_cells()
         for current_snake in self.active_snakes:
-            head = current_snake.cells[0]
-            current_snake.snek.body = list(
-                cell.get_relative_to(head) for cell in current_snake.cells
-            )
+            head = current_snake.get_head()
+
+            # build a grid around the head based on the vision range
+            grid = {
+                Cell(r, c)
+                for r, c in itertools.product(
+                    range(
+                        head.row - config.game.vision_range,
+                        head.row + config.game.vision_range,
+                    ),
+                    range(
+                        head.column - config.game.vision_range,
+                        head.column + config.game.vision_range,
+                    ),
+                )
+            }
+
+            # set the snek's occupied to occupied cells within grid
             current_snake.snek.occupied = frozenset(
-                cell.get_relative_to(head)
-                for cell in occupied
-                if cell.get_distance(head) <= config.game.vision_range
+                cells.get_relative_to(cell, head)
+                for cell in grid.intersection(self.occupied)
             )
 
     def should_continue(self, turn_limit):
@@ -107,17 +131,19 @@ class State:
         self.ended_snakes.append(snake)
 
     def step(self):
+        # add previous head to occupied
+        self.occupied |= {s.get_head() for s in self.active_snakes}
+
         # move the heads
         for snake in self.active_snakes:
             snake.move()
 
-        occupations = self.count_occupied_cells()
-        ended_cells = self.get_occupied_cells(self.ended_snakes)
+        occupations = Counter(s.get_head() for s in self.active_snakes)
 
         to_end = []
         # determine ended snakes
         for snake in self.active_snakes:
-            if snake.get_head() in ended_cells:
+            if snake.get_head() in self.occupied:
                 to_end.append(snake)
             elif occupations[snake.get_head()] > 1:
                 to_end.append(snake)
@@ -125,13 +151,7 @@ class State:
         for snake in to_end:
             self.end_snake(snake)
 
-        # score alive snakes
         for snake in self.active_snakes:
-            for cell in snake.cells:
-                if (
-                    occupations[cell] > 1 and cell is not snake.get_head()
-                ):  # second part should be guaranteed
-                    snake.ended += 1
             snake.age += 1
 
         self.set_board()

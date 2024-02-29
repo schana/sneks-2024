@@ -1,13 +1,14 @@
 from sneks.application.engine.config.config import config
 from sneks.application.engine.core.cell import Cell
 from sneks.application.engine.core.direction import Direction
+from sneks.application.engine.engine import cells
 
 
 def test_cell() -> None:
     absolute = Cell(0, 0)
     head = Cell(0, 20)
 
-    assert absolute.get_relative_to(head) == Cell(0, -20)
+    assert cells.get_relative_to(absolute, head) == Cell(0, -20)
 
     assert absolute.get_neighbor(Direction.UP) == Cell(-1, 0)
 

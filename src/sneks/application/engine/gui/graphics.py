@@ -3,6 +3,8 @@ import os
 import struct
 import sys
 
+from sneks.application.engine.core.cell import Cell
+
 try:
     import pygame
     from pygame import Surface
@@ -38,9 +40,9 @@ class Painter:
             os.environ["SDL_VIDEODRIVER"] = "dummy"
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        pygame.display.set_caption("Sneks")
+        pygame.display.set_caption("Sneks on a Toroidal Plane")
 
-    def draw_snake(self, cells, alive, color: tuple[int, int, int]):
+    def draw_snake(self, head: Cell, cells, alive, color: tuple[int, int, int]):
         assert self.screen is not None
         surface = pygame.Surface((CELL_SIZE - PADDING, CELL_SIZE - PADDING))
         fill_horizontal = pygame.Surface((PADDING * 2, CELL_SIZE - PADDING))
@@ -92,24 +94,27 @@ class Painter:
                         )
                     self.screen.blit(fill_vertical, rect)
             previous = cell
-        if not alive:
-            surface.fill(COLOR_INVALID)
-            rect = surface.get_rect(
-                top=CELL_SIZE + PADDING + cells[0].row * (CELL_SIZE + PADDING),
-                left=CELL_SIZE + PADDING + cells[0].column * (CELL_SIZE + PADDING),
-            )
-            self.screen.blit(surface, rect)
-        else:
+        if alive:
             surface.fill(
                 struct.unpack(
                     "BBB", hashlib.md5(struct.pack("BBB", *color)).digest()[-3:]
                 )
             )
             rect = surface.get_rect(
-                top=CELL_SIZE + PADDING + cells[0].row * (CELL_SIZE + PADDING),
-                left=CELL_SIZE + PADDING + cells[0].column * (CELL_SIZE + PADDING),
+                top=CELL_SIZE + PADDING + head.row * (CELL_SIZE + PADDING),
+                left=CELL_SIZE + PADDING + head.column * (CELL_SIZE + PADDING),
             )
             self.screen.blit(surface, rect)
+
+    def draw_ended_head(self, head: Cell):
+        assert self.screen is not None
+        surface = pygame.Surface((CELL_SIZE - PADDING, CELL_SIZE - PADDING))
+        surface.fill(COLOR_INVALID)
+        rect = surface.get_rect(
+            top=CELL_SIZE + PADDING + head.row * (CELL_SIZE + PADDING),
+            left=CELL_SIZE + PADDING + head.column * (CELL_SIZE + PADDING),
+        )
+        self.screen.blit(surface, rect)
 
     def clear(self):
         self.screen.fill(COLOR_BACKGROUND)
@@ -144,7 +149,8 @@ class Painter:
                 self.wait_for_keypress()
             pygame.time.delay(config.graphics.end_delay)
 
-    def wait_for_keypress(self):
+    @staticmethod
+    def wait_for_keypress():
         while True:
             # allow the key to be held instead of waiting for each step
             if any(pygame.key.get_pressed()):

@@ -10,9 +10,7 @@ def test_basic_functionality() -> None:
     submissions = registrar.get_submissions()
     assert 1 == len(submissions)
     snek: Snek = submissions[0].snek
-    snek.food = frozenset((Cell(0, 0),))
     snek.occupied = frozenset((Cell(1, 1),))
-    snek.body = [Cell(1, 1)]
     assert snek.get_next_direction() in Direction
 
 
@@ -26,10 +24,8 @@ def test_extended_functionality() -> None:
     for score in scores:
         assert isinstance(score, NormalizedScore)
         assert score.age == 0
-        assert score.length == 0
         assert score.ended == 0
         assert score.raw.age >= 0
-        assert score.raw.length >= 1
         assert score.raw.ended == 0
 
 
@@ -43,8 +39,6 @@ def test_multiple_functionality() -> None:
     for score in scores:
         assert isinstance(score, NormalizedScore)
         assert 0 <= score.age <= 1
-        assert 0 <= score.length <= 1
         assert 0 <= score.ended <= 1
         assert score.raw.age >= 0
-        assert score.raw.length >= 1
         assert score.raw.ended >= 0
