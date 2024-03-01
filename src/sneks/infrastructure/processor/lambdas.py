@@ -27,12 +27,13 @@ def get_handler(
     scope: Construct,
     name: str,
     handler: str,
+    layer: lambda_.LayerVersion,
     timeout: aws_cdk.Duration = aws_cdk.Duration.seconds(3),
     memory_size: int = 1792,
     environment: dict[str, str] | None = None,
 ) -> lambda_.Function:
     source = lambda_.Code.from_asset("src", exclude=["tests/**", "webapp/**"])
-    architecture = lambda_.Architecture.ARM_64
+    architecture = lambda_.Architecture.X86_64
     runtime = lambda_.Runtime.PYTHON_3_12
 
     return lambda_.Function(
@@ -42,7 +43,7 @@ def get_handler(
         architecture=architecture,
         timeout=timeout,
         memory_size=memory_size,
-        layers=[],
+        layers=[layer],
         environment=environment,
         code=source,
         handler=handler,
