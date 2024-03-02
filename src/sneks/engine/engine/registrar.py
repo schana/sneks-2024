@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from importlib.machinery import ModuleSpec
 from types import ModuleType
 
-from sneks.application.engine.config.config import config
-from sneks.application.engine.interface.snek import Snek
+from sneks.engine.config.instantiation import config
+from sneks.engine.interface.snek import Snek
 
 
 @dataclass(frozen=True)

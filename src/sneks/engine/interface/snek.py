@@ -1,9 +1,9 @@
 import abc
 from typing import FrozenSet, Sequence
 
-from sneks.application.engine.config.config import config
-from sneks.application.engine.core.cell import Cell
-from sneks.application.engine.core.direction import Direction
+from sneks.engine.config.instantiation import config
+from sneks.engine.core.cell import Cell
+from sneks.engine.core.direction import Direction
 
 
 class Snek(abc.ABC):

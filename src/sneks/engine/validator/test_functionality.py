@@ -1,9 +1,9 @@
-from sneks.application.engine.config.config import config
-from sneks.application.engine.core.cell import Cell
-from sneks.application.engine.core.direction import Direction
-from sneks.application.engine.engine import registrar, runner
-from sneks.application.engine.engine.mover import NormalizedScore
-from sneks.application.engine.interface.snek import Snek
+from sneks.engine.config.instantiation import config
+from sneks.engine.core.cell import Cell
+from sneks.engine.core.direction import Direction
+from sneks.engine.engine import registrar, runner
+from sneks.engine.engine.mover import NormalizedScore
+from sneks.engine.interface.snek import Snek
 
 
 def test_basic_functionality() -> None:

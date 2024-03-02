@@ -3,7 +3,7 @@ import os
 import struct
 import sys
 
-from sneks.application.engine.core.cell import Cell
+from sneks.engine.core.cell import Cell
 
 try:
     import pygame
@@ -12,8 +12,8 @@ except ModuleNotFoundError:
     pygame = object  # type: ignore
     Surface = object  # type: ignore
 
-from sneks.application.engine.config.config import config
-from sneks.application.engine.gui.recorder import Recorder
+from sneks.engine.config.instantiation import config
+from sneks.engine.gui.recorder import Recorder
 
 assert config.graphics is not None
 

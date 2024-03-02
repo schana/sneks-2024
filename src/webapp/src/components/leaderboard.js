@@ -57,12 +57,6 @@ export default function Leaderboard({ scores, colors, timestamp }) {
       sortingField: "age",
     },
     {
-      id: "length",
-      header: "Length",
-      cell: (e) => e.length.toLocaleString(),
-      sortingField: "length",
-    },
-    {
       id: "ended",
       header: "Ended",
       cell: (e) => e.ended.toLocaleString(),
@@ -75,12 +69,6 @@ export default function Leaderboard({ scores, colors, timestamp }) {
       sortingField: "age1",
     },
     {
-      id: "length1",
-      header: "Length'",
-      cell: (e) => e.length1.toLocaleString(),
-      sortingField: "length1",
-    },
-    {
       id: "ended1",
       header: "Ended'",
       cell: (e) => e.ended1.toLocaleString(),
@@ -89,7 +77,7 @@ export default function Leaderboard({ scores, colors, timestamp }) {
     {
       id: "score",
       header: "Score",
-      cell: (e) => (e.age1 + e.length1 + e.ended1).toLocaleString(),
+      cell: (e) => (e.age1 + e.ended1).toLocaleString(),
       sortingField: "score",
     }
   );

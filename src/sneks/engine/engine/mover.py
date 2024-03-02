@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import Tuple
 
-from sneks.application.engine.core.cell import Cell
-from sneks.application.engine.engine import cells
-from sneks.application.engine.interface.snek import Snek
+from sneks.engine.core.cell import Cell
+from sneks.engine.engine import cells
+from sneks.engine.interface.snek import Snek
 
 
 @dataclass(frozen=True)

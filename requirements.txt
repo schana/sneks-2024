@@ -1,2 +1,3 @@
 boto3
 pytest
+pygame>=2.5.2

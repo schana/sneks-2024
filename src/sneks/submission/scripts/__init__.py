@@ -2,9 +2,9 @@ import pathlib
 
 import sneks.submission.scripts.config as script_config
 from sneks import submission
-from sneks.application.engine.config.config import config as sneks_config
-from sneks.application.engine.engine import runner
-from sneks.application.engine.validator import main as validator
+from sneks.engine.config.instantiation import config as sneks_config
+from sneks.engine.engine import runner
+from sneks.engine.validator import main as validator
 
 prefix = str(pathlib.Path(submission.__file__).resolve().parent)
 

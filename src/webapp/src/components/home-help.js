@@ -8,15 +8,11 @@ export default function HomeHelp() {
         available to see here.
       </p>
       <p>
-        Scoring is composed of three components:
+        Scoring is composed of two components:
         <ol>
           <li>Age</li>
           <ul>
             <li>How many turns the Snek survives</li>
-          </ul>
-          <li>Length</li>
-          <ul>
-            <li>How many times the Snek consumes a food</li>
           </ul>
           <li>Ended</li>
           <ul>

@@ -2,8 +2,8 @@ import math
 from dataclasses import dataclass
 from functools import cache, cached_property
 
-from sneks.application.engine.config.config import config
-from sneks.application.engine.core.direction import Direction
+from sneks.engine.config.instantiation import config
+from sneks.engine.core.direction import Direction
 
 
 @dataclass(frozen=True)

@@ -28,12 +28,12 @@ def build_docs():
             sneks_path,
             f"{sneks_path}/submission",
             f"{sneks_path}/infrastructure",
-            f"{sneks_path}/application/backend",
-            f"{sneks_path}/application/engine/engine",
-            f"{sneks_path}/application/engine/gui",
-            f"{sneks_path}/application/engine/validator",
-            f"{sneks_path}/application/engine/config",
-            f"{sneks_path}/application/engine/template",
+            f"{sneks_path}/backend",
+            f"{sneks_path}/engine/engine",
+            f"{sneks_path}/engine/gui",
+            f"{sneks_path}/engine/validator",
+            f"{sneks_path}/engine/config",
+            f"{sneks_path}/engine/template",
         ]
     )
     subprocess.run(["sphinx-build", "-b", "html", ".", "build/docs"])
@@ -58,13 +58,6 @@ def get_template():
         "https://github.com/schana/sneks-submission/archive/refs/heads/main.zip"
     )
     with open(prefix / "template.zip", "wb") as f:
-        for chunk in response.iter_content():
-            f.write(chunk)
-
-    response = requests.get(
-        "https://github.com/schana/sneks-submission/raw/main/README.md"
-    )
-    with open(pathlib.Path("modules/README.md"), "wb") as f:
         for chunk in response.iter_content():
             f.write(chunk)
 

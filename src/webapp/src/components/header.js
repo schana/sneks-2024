@@ -13,7 +13,7 @@ export default function SneksHeader(props) {
     <TopNavigation
       identity={{
         href: "/",
-        title: "Sneks",
+        title: "Sneks on a Toroidal Plane",
       }}
       utilities={[
         {

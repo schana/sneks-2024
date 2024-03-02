@@ -1,8 +1,8 @@
 import pathlib
 
-from sneks.application.engine.config.config import config
-from sneks.application.engine.engine import registrar
-from sneks.application.engine.interface.snek import Snek
+from sneks.engine.config.instantiation import config
+from sneks.engine.engine import registrar
+from sneks.engine.interface.snek import Snek
 
 
 def test_import():

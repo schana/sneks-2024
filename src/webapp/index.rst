@@ -13,7 +13,7 @@ Welcome to Sneks' documentation!
    :maxdepth: 6
    :caption: Contents:
 
-   modules/sneks.application.engine
+   modules/sneks.engine
 
 Indices and tables
 ==================

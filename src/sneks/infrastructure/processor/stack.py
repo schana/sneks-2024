@@ -10,7 +10,7 @@ from aws_cdk import aws_sns as sns
 from aws_cdk import aws_sqs as sqs
 from constructs import Construct
 
-from sneks.application.backend import main
+from sneks.backend import main
 from sneks.infrastructure.processor.lambdas import (
     Lambdas,
     get_handler,

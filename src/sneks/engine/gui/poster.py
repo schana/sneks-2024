@@ -1,4 +1,4 @@
-from sneks.application.engine.gui import graphics, recorder
+from sneks.engine.gui import graphics, recorder
 
 
 def main():

@@ -2,7 +2,7 @@ import itertools
 import random
 from typing import Any
 
-from sneks.application.backend import notifier, processor, validator
+from sneks.backend import notifier, processor, validator
 
 
 def send_notification(event: dict, context):

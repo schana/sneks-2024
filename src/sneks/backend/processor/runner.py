@@ -11,8 +11,8 @@ from collections import namedtuple
 
 import boto3
 
-from sneks.application.engine.config.config import config
-from sneks.application.engine.engine import runner
+from sneks.engine.config.instantiation import config
+from sneks.engine.engine import runner
 
 if typing.TYPE_CHECKING:
     from mypy_boto3_s3 import S3ServiceResource

@@ -1,8 +1,8 @@
 from typing import List, Optional
 
-from sneks.application.engine.config.config import config
-from sneks.application.engine.engine.mover import NormalizedScore
-from sneks.application.engine.engine.state import State
+from sneks.engine.config.instantiation import config
+from sneks.engine.engine.mover import NormalizedScore
+from sneks.engine.engine.state import State
 
 
 def main() -> Optional[List[NormalizedScore]]:
@@ -24,8 +24,8 @@ def main2() -> Optional[List[NormalizedScore]]:
     state = State()
     state.reset()
     if config.graphics is not None and config.graphics.display:
-        from sneks.application.engine.gui.graphics import Painter
-        from sneks.application.engine.gui.recorder import Recorder
+        from sneks.engine.gui.graphics import Painter
+        from sneks.engine.gui.recorder import Recorder
 
         recorder = None
         if config.graphics is not None and config.graphics.record:

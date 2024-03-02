@@ -8,7 +8,7 @@ try:
 except ModuleNotFoundError:
     pygame = object()  # type: ignore
 
-from sneks.application.engine.config.config import config
+from sneks.engine.config.instantiation import config
 
 
 class Recorder:

@@ -4,10 +4,10 @@ from collections import Counter
 from operator import methodcaller
 from typing import FrozenSet, List, Set
 
-from sneks.application.engine.config.config import config
-from sneks.application.engine.core.cell import Cell
-from sneks.application.engine.engine import cells, registrar
-from sneks.application.engine.engine.mover import Mover, NormalizedScore, Score
+from sneks.engine.config.instantiation import config
+from sneks.engine.core.cell import Cell
+from sneks.engine.engine import cells, registrar
+from sneks.engine.engine.mover import Mover, NormalizedScore, Score
 
 
 class State:

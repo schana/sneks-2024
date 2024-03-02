@@ -1,7 +1,7 @@
-from sneks.application.engine.config.config import config
-from sneks.application.engine.core.cell import Cell
-from sneks.application.engine.core.direction import Direction
-from sneks.application.engine.engine import cells
+from sneks.engine.config.instantiation import config
+from sneks.engine.core.cell import Cell
+from sneks.engine.core.direction import Direction
+from sneks.engine.engine import cells
 
 
 def test_cell() -> None:

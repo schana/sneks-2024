@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["sneks*"]
+exclude = ["webapp*", "tests*", "sneks.backend*", "sneks.infrastructure*"]
 namespaces = false
 
 [tool.setuptools.dynamic]
@@ -13,12 +13,11 @@ dependencies = {file = ["requirements.txt"]}
 
 [tool.setuptools.dynamic.optional-dependencies]
 dev = {file = ["requirements-dev.txt"]}
-gui = {file = ["requirements-gui.txt"]}
 record = {file = ["requirements-record.txt"]}
 infra = {file = ["requirements-infra.txt"]}
 
 [project]
-name = "sneks"
+name = "toroidal-sneks"
 dynamic = ["version", "dependencies", "optional-dependencies"]
 description = "Sneks on a Toroidal Plane"
 readme = "README.md"
@@ -36,9 +35,9 @@ classifiers = [
 
 [project.scripts]
 cdk-app = "sneks.infrastructure.app:main"
-validate = "sneks.application.engine.validator.main:main"
-run = "sneks.application.engine.engine.runner:main"
-poster = "sneks.application.engine.gui.poster:main"
+validate = "sneks.engine.validator.main:main"
+run = "sneks.engine.engine.runner:main"
+poster = "sneks.engine.gui.poster:main"
 
 [tool.black]
 extend-exclude = "src/webapp"

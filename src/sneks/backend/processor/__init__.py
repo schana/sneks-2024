@@ -6,8 +6,8 @@ import typing
 import boto3
 import botocore.exceptions
 
-from sneks.application.backend.processor import runner
-from sneks.application.backend.processor.runner import Score
+from sneks.backend.processor import runner
+from sneks.backend.processor.runner import Score
 
 if typing.TYPE_CHECKING:
     from mypy_boto3_s3 import S3ServiceResource
