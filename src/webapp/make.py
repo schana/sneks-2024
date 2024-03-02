@@ -40,14 +40,10 @@ def build_docs():
 
 
 def get_template_readme():
+    root_path = pathlib.Path(".").resolve().parent.parent
     prefix = pathlib.Path("modules")
     prefix.mkdir(exist_ok=True)
-    response = requests.get(
-        "https://github.com/schana/sneks-submission/raw/main/README.md"
-    )
-    with open(prefix / "README.md", "wb") as f:
-        for chunk in response.iter_content():
-            f.write(chunk)
+    shutil.copyfile(root_path / "README.md", prefix / "README.md")
 
 
 def get_template():
