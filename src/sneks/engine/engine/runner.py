@@ -5,6 +5,19 @@ from sneks.engine.engine.mover import NormalizedScore
 from sneks.engine.engine.state import State
 
 
+def demo() -> None:
+    config.graphics.display = True
+    # config.game.rows = 360
+    # config.game.columns = 540
+    # config.graphics.cell_size = 2
+    config.graphics.step_delay = 0
+    config.runs = 100
+    config.turn_limit = 10000
+    config.registrar_submission_sneks = 100
+
+    main()
+
+
 def main() -> Optional[List[NormalizedScore]]:
     # import cProfile
     # import pstats

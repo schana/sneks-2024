@@ -67,7 +67,7 @@ class Graphics:
     headless: bool = False
     cell_size: int = 8
     padding: int = 1
-    step_delay: int = 0
+    step_delay: int = 40
     step_keypress_wait: bool = False
     end_delay: int = 1000
     end_keypress_wait: bool = False

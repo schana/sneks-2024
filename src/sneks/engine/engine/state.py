@@ -11,16 +11,17 @@ from sneks.engine.engine.mover import Mover, NormalizedScore, Score
 
 
 class State:
-    cells: Set[Cell] = {
-        Cell(r, c)
-        for r, c in itertools.product(
-            range(config.game.rows), range(config.game.columns)
-        )
-    }
-    active_snakes: List[Mover] = []
-    ended_snakes: List[Mover] = []
-    steps: int = 0
-    occupied: set[Cell] = set()
+    def __init__(self):
+        self.cells: Set[Cell] = {
+            Cell(r, c)
+            for r, c in itertools.product(
+                range(config.game.rows), range(config.game.columns)
+            )
+        }
+        self.active_snakes: List[Mover] = []
+        self.ended_snakes: List[Mover] = []
+        self.steps: int = 0
+        self.occupied: set[Cell] = set()
 
     def reset(self):
         self.steps = 0

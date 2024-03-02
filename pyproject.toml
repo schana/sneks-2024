@@ -37,6 +37,7 @@ classifiers = [
 cdk-app = "sneks.infrastructure.app:main"
 validate = "sneks.engine.validator.main:main"
 run = "sneks.engine.engine.runner:main"
+demo = "sneks.engine.engine.runner:demo"
 poster = "sneks.engine.gui.poster:main"
 
 [tool.black]
