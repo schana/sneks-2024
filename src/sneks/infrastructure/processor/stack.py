@@ -178,7 +178,7 @@ class Sneks(Stack):
             name="Validator",
             handler=get_handler_for_function(main.validate),
             layer=layer,
-            timeout=Duration.seconds(60),
+            timeout=Duration.seconds(120),
         )
         post_validator = get_handler(
             self,
