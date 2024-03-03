@@ -36,12 +36,12 @@ def main2() -> Optional[List[NormalizedScore]]:
     runs = 0
     state = State()
     state.reset()
-    if config.graphics is not None and config.graphics.display:
+    if config.graphics.display:
         from sneks.engine.gui.graphics import Painter
         from sneks.engine.gui.recorder import Recorder
 
         recorder = None
-        if config.graphics is not None and config.graphics.record:
+        if config.graphics.record:
             recorder = Recorder()
         painter = Painter(recorder=recorder)
         painter.initialize()

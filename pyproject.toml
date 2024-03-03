@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-exclude = ["webapp*", "tests*"]
+exclude = ["webapp*", "tests*", "submission*"]
 namespaces = false
 
 [tool.setuptools.dynamic]

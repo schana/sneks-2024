@@ -97,10 +97,10 @@ class Snek(abc.ABC):
         first having precedence.
 
         For example, to get the direction the snek should travel to close the
-        most distance between itself and the closest food, this method could be
-        used like::
+        most distance between itself and a cell 5 rows and 9 columns away,
+        this method could be used like::
 
-            self.get_direction_to_destination(self.get_closest_food())
+            self.get_direction_to_destination(Cell(5, 9))
 
         :param destination: the cell to travel towards
         :param directions: the directions to evaluate in order

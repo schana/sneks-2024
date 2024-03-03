@@ -1,7 +1,7 @@
 import pathlib
 
-import sneks.submission.scripts.config as script_config
-from sneks import submission
+import submission
+import submission.scripts.config as script_config
 from sneks.engine.config.instantiation import config as sneks_config
 from sneks.engine.engine import runner
 from sneks.engine.validator import main as validator

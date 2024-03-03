@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
 
 @dataclass
@@ -79,7 +79,7 @@ class Graphics:
 @dataclass
 class Config:
     game: Game = field(default_factory=Game)
-    graphics: Optional[Graphics] = field(default_factory=Graphics)
+    graphics: Graphics = field(default_factory=Graphics)
     runs: int = 10
     turn_limit: int = 1000
     registrar_prefix: str = "src"
