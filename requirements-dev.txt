@@ -3,7 +3,6 @@ boto3-stubs-lite[essential,sns,stepfunctions]
 isort
 moto
 mypy
-pytest
 tox
 build
 twine
