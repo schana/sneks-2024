@@ -72,8 +72,7 @@ class Cell:
 
     def get_neighbor(self, direction: Direction) -> "Cell":
         """
-        Gets a Cell's neighbor in the specified direction. Note that this does
-        not perform any boundary checking and could return invalid cells.
+        Gets a Cell's neighbor in the specified direction.
 
         :param direction: the direction of the neighbor
         :return: cell in the specified direction
