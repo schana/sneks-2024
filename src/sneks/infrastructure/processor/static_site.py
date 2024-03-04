@@ -85,6 +85,10 @@ class StaticSite(Construct):
         user_pool_client = user_pool.add_client(
             "Amplify",
             prevent_user_existence_errors=True,
+            read_attributes=cognito.ClientAttributes().with_standard_attributes(
+                email=True,
+                email_verified=True,
+            ),
         )
 
         identity_pool = cognito_identity.IdentityPool(

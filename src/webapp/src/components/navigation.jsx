@@ -19,7 +19,7 @@ export default function Navigation() {
     items.push(
       { type: "link", text: "Start", href: "/start" },
       { type: "link", text: "Submit", href: "/submit" },
-      { type: "link", text: "Submissions", href: "/submissions" }
+      { type: "link", text: "Submissions", href: "/submissions" },
     );
   }
 
@@ -42,7 +42,7 @@ export default function Navigation() {
       text: "Inspiration",
       href: "https://youtu.be/L73WY-IT2sE",
       external: true,
-    }
+    },
   );
 
   return (

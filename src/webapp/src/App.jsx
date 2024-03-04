@@ -25,7 +25,7 @@ export default function App() {
   };
   const [amplifyColorMode, setAmplifyColorMode] = useLocalStorage(
     "mode",
-    "light"
+    "light",
   );
   if (amplifyColorMode === "dark") {
     applyMode(Mode.Dark);

@@ -8,7 +8,7 @@ import { Auth } from "aws-amplify";
 import AuthGuard from "./authenticator";
 
 export default function Submit() {
-  const onSuccess = ({ key }) => {
+  const onSuccess = () => {
     Auth.currentAuthenticatedUser()
       .then((attributes) => {
         Storage.put(
@@ -19,7 +19,7 @@ export default function Submit() {
           `,
           {
             level: "private",
-          }
+          },
         );
       })
       .catch((err) => console.log(err));

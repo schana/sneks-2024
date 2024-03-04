@@ -21,7 +21,7 @@ export default function Home() {
         setScores(responseJson.scores);
         setColors(responseJson.colors);
         setTimestamp(
-          new Date(`${responseJson.timestamp}+0000`).toLocaleString()
+          new Date(`${responseJson.timestamp}+0000`).toLocaleString(),
         );
         setSrc(Math.floor(Math.random() * responseJson.videos.length));
         videoRef.current.load();

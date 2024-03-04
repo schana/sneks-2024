@@ -40,15 +40,15 @@ export default function Files({ colorMode, prefix }) {
     Storage.list("", { pageSize: "ALL", level: "protected" })
       .then((result) => {
         result.results = result.results.filter(
-          (e) => !e.key.endsWith("user_info.py")
+          (e) => !e.key.endsWith("user_info.py"),
         );
         result.results.sort((a, b) => b.key.localeCompare(a.key));
         if (prefix !== "private/") {
           const groups = Array.from(
-            new Set(result.results.map((e) => e.key.split("/")[0])).values()
+            new Set(result.results.map((e) => e.key.split("/")[0])).values(),
           ).sort();
           result.results.forEach(
-            (e) => (e["group"] = groups.indexOf(e.key.split("/")[0]))
+            (e) => (e["group"] = groups.indexOf(e.key.split("/")[0])),
           );
         }
         setFiles(result.results);
@@ -123,7 +123,7 @@ export default function Files({ colorMode, prefix }) {
           </SpaceBetween>
         </Box>
       ),
-    }
+    },
   );
 
   return (

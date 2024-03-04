@@ -79,7 +79,7 @@ export default function Leaderboard({ scores, colors, timestamp }) {
       header: "Score",
       cell: (e) => (e.age1 + e.ended1).toLocaleString(),
       sortingField: "score",
-    }
+    },
   );
 
   return (
