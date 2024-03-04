@@ -13,9 +13,9 @@ from sneks.engine.engine.mover import Mover, NormalizedScore, Score
 class State:
     def __init__(self):
         self.cells: Set[Cell] = {
-            Cell(r, c)
-            for r, c in itertools.product(
-                range(config.game.rows), range(config.game.columns)
+            Cell(x, y)
+            for x, y in itertools.product(
+                range(config.game.columns), range(config.game.rows)
             )
         }
         self.active_snakes: List[Mover] = []
@@ -105,15 +105,15 @@ class State:
 
             # build a grid around the head based on the vision range
             grid = {
-                Cell(r, c)
-                for r, c in itertools.product(
+                Cell(x, y)
+                for x, y in itertools.product(
                     range(
-                        head.row - config.game.vision_range,
-                        head.row + config.game.vision_range,
+                        head.x - config.game.vision_range,
+                        head.x + config.game.vision_range,
                     ),
                     range(
-                        head.column - config.game.vision_range,
-                        head.column + config.game.vision_range,
+                        head.y - config.game.vision_range,
+                        head.y + config.game.vision_range,
                     ),
                 )
             }

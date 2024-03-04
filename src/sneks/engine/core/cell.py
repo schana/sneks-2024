@@ -14,11 +14,11 @@ class Cell:
 
     >>> cell = Cell(1, 1)
     >>> cell.get_left()
-    Cell(1, 0)
+    Cell(0, 1)
     >>> cell.get_relative_neighbor(2, 3)
     Cell(3, 4)
     >>> cell.get_neighbor(Direction.DOWN)
-    Cell(2, 1)
+    Cell(1, 0)
 
     Finally, it can be used to calculate distance between cells:
 
@@ -29,21 +29,21 @@ class Cell:
 
     """
 
-    row: int  #:
-    column: int  #:
+    x: int  #:
+    y: int  #:
 
     @cache  # type: ignore
-    def __new__(cls, row: int, column: int) -> "Cell":
+    def __new__(cls, x: int, y: int) -> "Cell":
         return super().__new__(cls)
 
     def __getnewargs__(self):
-        return self.row, self.column
+        return self.x, self.y
 
     @cached_property
     def _hash(self):
         # Determine the hash based on only positive indices,
         # so hash(Cell(-1,-1)) == hash(Cell(rows, columns))
-        return hash((self.row % config.game.rows, self.column % config.game.columns))
+        return hash((self.x % config.game.columns, self.y % config.game.rows))
 
     def __eq__(self, other):
         return self._hash == other._hash
@@ -52,13 +52,13 @@ class Cell:
         return self._hash
 
     @cache
-    def get_relative_neighbor(self, row_offset: int, column_offset: int) -> "Cell":
+    def get_relative_neighbor(self, x_offset: int, y_offset: int) -> "Cell":
         """
         Returns the cell with coordinates offset by the specified parameters.
 
-        :param row_offset: the amount to offset this cell's row by
-        :param column_offset: the amount to offset this cell's column by
-        :return: the cell at ``(self.row + row_offset, self.column + column_offset)``
+        :param x_offset: the amount to offset this cell's x by
+        :param y_offset: the amount to offset this cell's y by
+        :return: the cell at ``(self.x + x_offset, self.y + y_offset)``
         """
         # We need to use integer modulus instead of floor to use the sign
         # of the numerator as opposed to the denominator in order to preserve
@@ -66,8 +66,8 @@ class Cell:
         # Effectively: n - int(n / base) * base
         # Instead of:  n - floor(n / base) * base
         return Cell(
-            int(math.fmod((self.row + row_offset), config.game.rows)),
-            int(math.fmod((self.column + column_offset), config.game.columns)),
+            int(math.fmod((self.x + x_offset), config.game.columns)),
+            int(math.fmod((self.y + y_offset), config.game.rows)),
         )
 
     def get_neighbor(self, direction: Direction) -> "Cell":
@@ -92,25 +92,25 @@ class Cell:
         """
         :return: cell in the up direction
         """
-        return self.get_relative_neighbor(-1, 0)
+        return self.get_relative_neighbor(0, 1)
 
     def get_down(self) -> "Cell":
         """
         :return: cell in the down direction
         """
-        return self.get_relative_neighbor(1, 0)
+        return self.get_relative_neighbor(0, -1)
 
     def get_left(self) -> "Cell":
         """
         :return: cell in the left direction
         """
-        return self.get_relative_neighbor(0, -1)
+        return self.get_relative_neighbor(-1, 0)
 
     def get_right(self) -> "Cell":
         """
         :return: cell in the right direction
         """
-        return self.get_relative_neighbor(0, 1)
+        return self.get_relative_neighbor(1, 0)
 
     def get_distance(self, other: "Cell") -> float:
         """
@@ -121,20 +121,20 @@ class Cell:
         """
 
         # Get raw distance
-        column_distance = abs(self.column - other.column)
-        row_distance = abs(self.row - other.row)
+        x_distance = abs(self.x - other.x)
+        y_distance = abs(self.y - other.y)
 
         # Determine if it's closer to go the other way
-        column_distance = (
-            column_distance
-            if column_distance < config.game.columns / 2
-            else config.game.columns - column_distance
+        x_distance = (
+            x_distance
+            if x_distance < config.game.columns / 2
+            else config.game.columns - x_distance
         )
-        row_distance = (
-            row_distance
-            if row_distance < config.game.rows / 2
-            else config.game.rows - row_distance
+        y_distance = (
+            y_distance
+            if y_distance < config.game.rows / 2
+            else config.game.rows - y_distance
         )
 
         # Compute the distance
-        return math.sqrt(column_distance**2 + row_distance**2)
+        return math.sqrt(x_distance**2 + y_distance**2)

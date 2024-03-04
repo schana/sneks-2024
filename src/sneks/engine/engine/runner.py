@@ -25,11 +25,13 @@ def main() -> Optional[List[NormalizedScore]]:
     # pr = cProfile.Profile()
     # pr.enable()
 
-    return main2()
+    result = main2()
 
     # pr.disable()
     # stats = pstats.Stats(pr)
     # stats.sort_stats("tottime").print_stats(20)
+
+    return result
 
 
 def main2() -> Optional[List[NormalizedScore]]:

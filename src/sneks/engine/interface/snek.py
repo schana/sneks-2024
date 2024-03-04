@@ -97,7 +97,7 @@ class Snek(abc.ABC):
         first having precedence.
 
         For example, to get the direction the snek should travel to close the
-        most distance between itself and a cell 5 rows and 9 columns away,
+        most distance between itself and a cell 5 columns and 9 rows away,
         this method could be used like::
 
             self.get_direction_to_destination(Cell(5, 9))

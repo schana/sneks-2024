@@ -4,6 +4,7 @@ import struct
 import sys
 
 from sneks.engine.core.cell import Cell
+from sneks.engine.engine.cells import get_relative_to
 
 try:
     import pygame
@@ -42,6 +43,15 @@ class Painter:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Sneks on a Toroidal Plane")
 
+    @staticmethod
+    def get_rect(surface: pygame.Surface, cell: Cell) -> pygame.Rect:
+        return surface.get_rect(
+            top=CELL_SIZE
+            + PADDING
+            + (config.game.rows - cell.y - 1) * (CELL_SIZE + PADDING),
+            left=CELL_SIZE + PADDING + cell.x * (CELL_SIZE + PADDING),
+        )
+
     def draw_snake(self, head: Cell, cells, alive, color: tuple[int, int, int]):
         assert self.screen is not None
         surface = pygame.Surface((CELL_SIZE - PADDING, CELL_SIZE - PADDING))
@@ -50,49 +60,113 @@ class Painter:
         surface.fill(color)
         fill_horizontal.fill(color)
         fill_vertical.fill(color)
-        previous = None
+        previous: Cell | None = None
         for cell in cells:
-            rect = surface.get_rect(
-                top=CELL_SIZE + PADDING + cell.row * (CELL_SIZE + PADDING),
-                left=CELL_SIZE + PADDING + cell.column * (CELL_SIZE + PADDING),
-            )
+            rect = self.get_rect(surface=surface, cell=cell)
             self.screen.blit(surface, rect)
             if previous is not None:
-                dr, dc = cell.row - previous.row, cell.column - previous.column
-                if dr == 0:
-                    if dc == -1:
-                        rect = fill_horizontal.get_rect(
-                            top=CELL_SIZE + cell.row * (CELL_SIZE + PADDING) + PADDING,
-                            left=CELL_SIZE
-                            + previous.column * (CELL_SIZE + PADDING)
-                            - PADDING,
+                # This is super verbose and can be refactored
+                looped = abs(cell.x - previous.x) + abs(cell.y - previous.y) > 1
+
+                relative = get_relative_to(cell, previous)
+                dx = min(1, max(relative.x, -1))
+                dy = min(1, max(relative.y, -1))
+                if looped:
+                    dx *= -1
+                    dy *= -1
+                match (dx, dy):
+                    case (1, 0):
+                        # fill the padding to the left
+                        top = (
+                            CELL_SIZE
+                            + (config.game.rows - cell.y - 1) * (CELL_SIZE + PADDING)
+                            + PADDING
                         )
-                    else:
-                        rect = fill_horizontal.get_rect(
-                            top=CELL_SIZE + cell.row * (CELL_SIZE + PADDING) + PADDING,
-                            left=CELL_SIZE
-                            + cell.column * (CELL_SIZE + PADDING)
-                            - PADDING,
+                        left = CELL_SIZE + cell.x * (CELL_SIZE + PADDING) - PADDING
+                        rect = fill_horizontal.get_rect(top=top, left=left)
+                        self.screen.blit(fill_horizontal, rect)
+                        if looped:
+                            # fill the padding to the right of the previous
+                            top = (
+                                CELL_SIZE
+                                + (config.game.rows - cell.y - 1)
+                                * (CELL_SIZE + PADDING)
+                                + PADDING
+                            )
+                            left = (
+                                CELL_SIZE
+                                + (previous.x + 1) * (CELL_SIZE + PADDING)
+                                - PADDING
+                            )
+                            rect = fill_horizontal.get_rect(top=top, left=left)
+                            self.screen.blit(fill_horizontal, rect)
+                    case (-1, 0):
+                        # fill the padding to the right
+                        top = (
+                            CELL_SIZE
+                            + (config.game.rows - cell.y - 1) * (CELL_SIZE + PADDING)
+                            + PADDING
                         )
-                    self.screen.blit(fill_horizontal, rect)
-                else:
-                    if dr == -1:
-                        rect = fill_vertical.get_rect(
-                            top=CELL_SIZE
-                            + previous.row * (CELL_SIZE + PADDING)
-                            - PADDING,
-                            left=CELL_SIZE
-                            + cell.column * (CELL_SIZE + PADDING)
-                            + PADDING,
+                        left = CELL_SIZE + previous.x * (CELL_SIZE + PADDING) - PADDING
+                        rect = fill_horizontal.get_rect(top=top, left=left)
+                        self.screen.blit(fill_horizontal, rect)
+                        if looped:
+                            # fill the padding to the right of the current
+                            top = (
+                                CELL_SIZE
+                                + (config.game.rows - cell.y - 1)
+                                * (CELL_SIZE + PADDING)
+                                + PADDING
+                            )
+                            left = (
+                                CELL_SIZE
+                                + (cell.x + 1) * (CELL_SIZE + PADDING)
+                                - PADDING
+                            )
+                            rect = fill_horizontal.get_rect(top=top, left=left)
+                            self.screen.blit(fill_horizontal, rect)
+                    case (0, 1):
+                        # fill the padding below
+                        top = (
+                            CELL_SIZE
+                            + (config.game.rows - previous.y - 1)
+                            * (CELL_SIZE + PADDING)
+                            - PADDING
                         )
-                    else:
-                        rect = fill_vertical.get_rect(
-                            top=CELL_SIZE + cell.row * (CELL_SIZE + PADDING) - PADDING,
-                            left=CELL_SIZE
-                            + cell.column * (CELL_SIZE + PADDING)
-                            + PADDING,
+                        left = CELL_SIZE + cell.x * (CELL_SIZE + PADDING) + PADDING
+                        rect = fill_vertical.get_rect(top=top, left=left)
+                        self.screen.blit(fill_vertical, rect)
+                        if looped:
+                            # fill the padding to the below the current
+                            top = (
+                                CELL_SIZE
+                                + (config.game.rows - cell.y) * (CELL_SIZE + PADDING)
+                                - PADDING
+                            )
+                            left = CELL_SIZE + cell.x * (CELL_SIZE + PADDING) + PADDING
+                            rect = fill_vertical.get_rect(top=top, left=left)
+                            self.screen.blit(fill_vertical, rect)
+                    case (0, -1):
+                        # fill the padding above
+                        top = (
+                            CELL_SIZE
+                            + (config.game.rows - cell.y - 1) * (CELL_SIZE + PADDING)
+                            - PADDING
                         )
-                    self.screen.blit(fill_vertical, rect)
+                        left = CELL_SIZE + cell.x * (CELL_SIZE + PADDING) + PADDING
+                        rect = fill_vertical.get_rect(top=top, left=left)
+                        self.screen.blit(fill_vertical, rect)
+                        if looped:
+                            # fill the padding to the below the previous
+                            top = (
+                                CELL_SIZE
+                                + (config.game.rows - previous.y)
+                                * (CELL_SIZE + PADDING)
+                                - PADDING
+                            )
+                            left = CELL_SIZE + cell.x * (CELL_SIZE + PADDING) + PADDING
+                            rect = fill_vertical.get_rect(top=top, left=left)
+                            self.screen.blit(fill_vertical, rect)
             previous = cell
         if alive:
             surface.fill(
@@ -100,20 +174,14 @@ class Painter:
                     "BBB", hashlib.md5(struct.pack("BBB", *color)).digest()[-3:]
                 )
             )
-            rect = surface.get_rect(
-                top=CELL_SIZE + PADDING + head.row * (CELL_SIZE + PADDING),
-                left=CELL_SIZE + PADDING + head.column * (CELL_SIZE + PADDING),
-            )
+            rect = self.get_rect(surface=surface, cell=head)
             self.screen.blit(surface, rect)
 
     def draw_ended_head(self, head: Cell):
         assert self.screen is not None
         surface = pygame.Surface((CELL_SIZE - PADDING, CELL_SIZE - PADDING))
         surface.fill(COLOR_INVALID)
-        rect = surface.get_rect(
-            top=CELL_SIZE + PADDING + head.row * (CELL_SIZE + PADDING),
-            left=CELL_SIZE + PADDING + head.column * (CELL_SIZE + PADDING),
-        )
+        rect = self.get_rect(surface=surface, cell=head)
         self.screen.blit(surface, rect)
 
     def clear(self):
