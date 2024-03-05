@@ -78,7 +78,7 @@ class Pipeline(Stack):
             code_build_defaults=pipelines.CodeBuildOptions(
                 build_environment=codebuild.BuildEnvironment(
                     build_image=codebuild.LinuxBuildImage.STANDARD_7_0,
-                    compute_type=codebuild.ComputeType.LARGE,
+                    compute_type=codebuild.ComputeType.SMALL,
                 )
             ),
         )
@@ -120,6 +120,10 @@ class Pipeline(Stack):
                 ARN=self.arn,
             ),
             cache=codebuild.Cache.bucket(cache_bucket),
+            build_environment=codebuild.BuildEnvironment(
+                build_image=codebuild.LinuxBuildImage.STANDARD_7_0,
+                compute_type=codebuild.ComputeType.SMALL,
+            ),
             install_commands=[
                 "pip install tox",
             ],
