@@ -1,7 +1,7 @@
 import * as React from "react";
 import ContentLayout from "@cloudscape-design/components/content-layout";
 import Header from "@cloudscape-design/components/header";
-import { FileUploader } from "@aws-amplify/ui-react";
+import { StorageManager } from "@aws-amplify/ui-react-storage";
 import { Storage } from "aws-amplify";
 import { Auth } from "aws-amplify";
 
@@ -37,14 +37,13 @@ export default function Submit() {
           </Header>
         }
       >
-        <FileUploader
+        <StorageManager
           accessLevel="private"
-          variation="drop"
           acceptedFileTypes={[".py"]}
-          maxFiles={20}
-          maxSize={20000}
+          maxFileCount={20}
+          maxFileSize={20000}
           useAccelerateEndpoint={true}
-          onSuccess={onSuccess}
+          onUploadSuccess={onSuccess}
         />
       </ContentLayout>
     </AuthGuard>
