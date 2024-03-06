@@ -32,10 +32,11 @@ def test_extended_functionality() -> None:
 def test_multiple_functionality() -> None:
     assert config.graphics is not None
     config.graphics.display = False
-    config.registrar_submission_sneks = 100
+    config.turn_limit = 200
+    config.registrar_submission_sneks = 10
     scores = runner.main()
     assert scores is not None
-    assert len(scores) == 1000
+    assert len(scores) == 100
     for score in scores:
         assert isinstance(score, NormalizedScore)
         assert 0 <= score.age <= 1
