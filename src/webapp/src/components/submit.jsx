@@ -41,7 +41,7 @@ export default function Submit() {
           accessLevel="private"
           acceptedFileTypes={[".py"]}
           maxFileCount={20}
-          maxFileSize={20000}
+          maxFileSize={100000}
           useAccelerateEndpoint={true}
           onUploadSuccess={onSuccess}
         />
