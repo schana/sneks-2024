@@ -71,10 +71,26 @@ class Pipeline(Stack):
             ],
         )
 
+        layer_build = pipelines.CodeBuildStep(
+            "layer-build",
+            input=self.connection,
+            build_environment=codebuild.BuildEnvironment(
+                build_image=codebuild.LinuxArmLambdaBuildImage.AMAZON_LINUX_2023_PYTHON_3_12,
+                compute_type=codebuild.ComputeType.LAMBDA_1GB,
+            ),
+            install_commands=[
+                "pip install tox",
+            ],
+            commands=[
+                "tox -e layer",
+            ],
+            primary_output_directory="dist/layer",
+        )
+
         pipeline = pipelines.CodePipeline(
             self,
             "pipeline",
-            synth=self.get_synth_step(cache_bucket),
+            synth=self.get_synth_step(cache_bucket, layer_build),
             code_build_defaults=pipelines.CodeBuildOptions(
                 build_environment=codebuild.BuildEnvironment(
                     build_image=codebuild.LinuxBuildImage.STANDARD_7_0,
@@ -100,7 +116,8 @@ class Pipeline(Stack):
         )
         return f"{concatenated[:RESOURCE_NAME_LENGTH_LIMIT - 2]}{checksum:02x}"
 
-    def get_connection(self) -> CodeStarSource:
+    @functools.cached_property
+    def connection(self) -> CodeStarSource:
         return CodeStarSource(
             name="code-star-connection",
             connection_arn=self.arn,
@@ -109,10 +126,15 @@ class Pipeline(Stack):
             branch=self.branch,
         )
 
-    def get_synth_step(self, cache_bucket: aws_s3.Bucket) -> pipelines.CodeBuildStep:
+    def get_synth_step(
+        self, cache_bucket: aws_s3.Bucket, layer_build: pipelines.CodeBuildStep
+    ) -> pipelines.CodeBuildStep:
         return pipelines.CodeBuildStep(
             "synth",
-            input=self.get_connection(),
+            input=self.connection,
+            additional_inputs={
+                "dist/layer": layer_build,
+            },
             env=dict(
                 OWNER=self.owner,
                 REPO=self.repo,

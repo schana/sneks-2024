@@ -33,7 +33,7 @@ def get_handler(
     environment: dict[str, str] | None = None,
 ) -> lambda_.Function:
     source = lambda_.Code.from_asset("src", exclude=["tests/**", "webapp/**"])
-    architecture = lambda_.Architecture.X86_64
+    architecture = lambda_.Architecture.ARM_64
     runtime = lambda_.Runtime.PYTHON_3_12
 
     return lambda_.Function(
