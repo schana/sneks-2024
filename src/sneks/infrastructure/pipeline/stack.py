@@ -78,11 +78,8 @@ class Pipeline(Stack):
                 build_image=codebuild.LinuxArmLambdaBuildImage.AMAZON_LINUX_2023_PYTHON_3_12,
                 compute_type=codebuild.ComputeType.LAMBDA_1GB,
             ),
-            install_commands=[
-                "pip install tox",
-            ],
             commands=[
-                "tox -e layer",
+                "pip install -r requirements.txt -r requirements-record.txt -r requirements-extra.txt -t dist/layer/python",
             ],
             primary_output_directory="dist/layer",
         )
