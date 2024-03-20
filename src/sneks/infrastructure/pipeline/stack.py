@@ -4,9 +4,8 @@ from typing import Optional
 
 import aws_cdk
 import aws_cdk as cdk
-from aws_cdk import Stack, Stage
+from aws_cdk import Stack, Stage, aws_s3, pipelines
 from aws_cdk import aws_codebuild as codebuild
-from aws_cdk import aws_s3, pipelines
 from constructs import Construct
 
 from sneks.infrastructure.pipeline.source import CodeStarSource
@@ -54,7 +53,7 @@ class Pipeline(Stack):
         super().__init__(
             scope,
             construct_id,
-            stack_name=self.get_resource_name(f"pipeline-stack"),
+            stack_name=self.get_resource_name("pipeline-stack"),
             description=f"Pipeline for {self.repo} repository on {self.branch} branch",
         )
 

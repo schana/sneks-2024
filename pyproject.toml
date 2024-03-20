@@ -48,10 +48,14 @@ run = "sneks.engine.engine.runner:main"
 demo = "sneks.engine.engine.runner:demo"
 poster = "sneks.engine.gui.poster:main"
 
-[tool.black]
-extend-exclude = "src/webapp"
+[tool.ruff]
+exclude = [
+    "src/webapp",
+]
+src = ["src"]
 
-[tool.isort]
-profile = "black"
-known_first_party = "sneks"
-skip_glob = ["src/webapp"]
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.ruff.format]
+docstring-code-format = true

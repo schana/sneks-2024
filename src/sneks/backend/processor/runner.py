@@ -194,7 +194,7 @@ def save_manifest(
         bucket.Object(f"games/manifest_{manifest['timestamp']}.json").copy(
             CopySource=dict(Bucket=static_site_bucket_name, Key="games/manifest.json")
         )
-    except:
+    except Exception:
         # ignore no manifest
         pass
 

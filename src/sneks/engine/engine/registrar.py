@@ -31,8 +31,7 @@ def get_submissions() -> list[Submission]:
 def get_submission_classes() -> dict[str, Snek]:
     results = {}
     submissions = set(
-        p.parent
-        for p in pathlib.Path(config.registrar_prefix).glob(f"**/submission.py")
+        p.parent for p in pathlib.Path(config.registrar_prefix).glob("**/submission.py")
     )
     for submission in submissions:
         name, snek = get_custom_snek(submission)

@@ -1,6 +1,4 @@
-black
 boto3-stubs-lite[essential,sns,stepfunctions]
-isort
 moto
 mypy
 tox
@@ -11,3 +9,4 @@ types-requests
 sphinx
 sphinx-rtd-theme
 myst-parser
+ruff
