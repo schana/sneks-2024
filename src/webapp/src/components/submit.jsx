@@ -39,9 +39,9 @@ export default function Submit() {
       >
         <StorageManager
           accessLevel="private"
-          acceptedFileTypes={[".py", ".pt", ".pth"]}
+          acceptedFileTypes={[".py"]}
           maxFileCount={20}
-          maxFileSize={10000000}
+          maxFileSize={100000}
           useAccelerateEndpoint={true}
           onUploadSuccess={onSuccess}
         />
