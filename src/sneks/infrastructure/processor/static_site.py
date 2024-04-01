@@ -139,6 +139,14 @@ class StaticSite(Construct):
             identity_pool.authenticated_role,
             objects_key_pattern="private/${cognito-identity.amazonaws.com:sub}/*.py",
         )
+        submission_bucket.grant_put(
+            identity_pool.authenticated_role,
+            objects_key_pattern="private/${cognito-identity.amazonaws.com:sub}/*.pt",
+        )
+        submission_bucket.grant_put(
+            identity_pool.authenticated_role,
+            objects_key_pattern="private/${cognito-identity.amazonaws.com:sub}/*.pth",
+        )
         submission_bucket.grant_read(
             identity_pool.authenticated_role,
             objects_key_pattern="private/${cognito-identity.amazonaws.com:sub}/*",

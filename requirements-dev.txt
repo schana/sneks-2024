@@ -1,4 +1,4 @@
-boto3-stubs-lite[essential,sns,stepfunctions]
+boto3-stubs-lite[essential,sns,stepfunctions,cognito-idp]
 moto
 mypy
 tox
