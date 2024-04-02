@@ -127,6 +127,7 @@ class Pipeline(Stack):
             ),
             install_commands=[
                 "pip install tox",
+                "docker run --privileged --rm public.ecr.aws/eks-distro-build-tooling/binfmt-misc:qemu-v7.0.0 --install arm64",
             ],
             commands=[
                 "tox --parallel-no-spinner -m build",
@@ -140,7 +141,7 @@ class Pipeline(Stack):
                         }
                     },
                     "cache": {
-                        "paths": ["/root/.cache/pip/**/*"],
+                        "paths": ["/root/.cache/**/*"],
                     },
                 }
             ),
