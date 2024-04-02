@@ -27,26 +27,21 @@ def get_handler(
     scope: Construct,
     name: str,
     handler: str,
-    layer: lambda_.LayerVersion,
     timeout: aws_cdk.Duration = aws_cdk.Duration.seconds(3),
     memory_size: int = 1792,
     environment: dict[str, str] | None = None,
 ) -> lambda_.Function:
-    source = lambda_.Code.from_asset("src", exclude=["tests/**", "webapp/**"])
-    architecture = lambda_.Architecture.ARM_64
-    runtime = lambda_.Runtime.PYTHON_3_12
-
-    return lambda_.Function(
+    return lambda_.DockerImageFunction(
         scope,
         id=name,
-        runtime=runtime,
-        architecture=architecture,
+        code=lambda_.DockerImageCode.from_image_asset(
+            directory=".",
+            cmd=[handler],
+        ),
+        architecture=lambda_.Architecture.ARM_64,
         timeout=timeout,
         memory_size=memory_size,
-        layers=[layer],
         environment=environment,
-        code=source,
-        handler=handler,
     )
 
 

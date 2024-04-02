@@ -146,80 +146,63 @@ class Sneks(Stack):
         static_site_bucket: s3.Bucket,
         notification_topic: sns.Topic,
     ) -> Lambdas:
-        layer = lambda_.LayerVersion(
-            self,
-            id="layer",
-            code=lambda_.Code.from_asset(path="dist/layer"),
-            removal_policy=aws_cdk.RemovalPolicy.DESTROY,
-        )
-
         notifier = get_handler(
             self,
             name="Notifier",
             handler=get_handler_for_function(main.send_notification),
-            layer=layer,
             environment={"sns_topic_arn": notification_topic.topic_arn},
         )
         start_processor = get_handler(
             self,
             name="StartProcessor",
             handler=get_handler_for_function(main.start_processing),
-            layer=layer,
         )
         pre_processor = get_handler(
             self,
             name="PreProcessor",
             handler=get_handler_for_function(main.pre_process),
-            layer=layer,
             timeout=Duration.seconds(20),
         )
         validator = get_handler(
             self,
             name="Validator",
             handler=get_handler_for_function(main.validate),
-            layer=layer,
             timeout=Duration.seconds(120),
         )
         post_validator = get_handler(
             self,
             name="PostValidator",
             handler=get_handler_for_function(main.post_validate),
-            layer=layer,
             timeout=Duration.seconds(20),
         )
         post_validator_reduce = get_handler(
             self,
             name="PostValidatorReduce",
             handler=get_handler_for_function(main.post_validate_reduce),
-            layer=layer,
             timeout=Duration.seconds(20),
         )
         processor = get_handler(
             self,
             name="Processor",
             handler=get_handler_for_function(main.process),
-            layer=layer,
             timeout=Duration.minutes(5),
         )
         recorder = get_handler(
             self,
             name="Recorder",
             handler=get_handler_for_function(main.record),
-            layer=layer,
             timeout=Duration.minutes(4),
         )
         post_process_save = get_handler(
             self,
             name="PostProcessSave",
             handler=get_handler_for_function(main.post_process_save),
-            layer=layer,
             timeout=Duration.seconds(20),
         )
         post_processor = get_handler(
             self,
             name="PostProcessor",
             handler=get_handler_for_function(main.post_process),
-            layer=layer,
             timeout=Duration.seconds(30),
         )
 

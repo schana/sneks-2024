@@ -70,23 +70,10 @@ class Pipeline(Stack):
             ],
         )
 
-        layer_build = pipelines.CodeBuildStep(
-            "layer-build",
-            input=self.connection,
-            build_environment=codebuild.BuildEnvironment(
-                build_image=codebuild.LinuxArmLambdaBuildImage.AMAZON_LINUX_2023_PYTHON_3_12,
-                compute_type=codebuild.ComputeType.LAMBDA_1GB,
-            ),
-            commands=[
-                "pip install -r requirements.txt -r requirements-record.txt -r requirements-extra.txt -t dist/layer/python",
-            ],
-            primary_output_directory="dist/layer",
-        )
-
         pipeline = pipelines.CodePipeline(
             self,
             "pipeline",
-            synth=self.get_synth_step(cache_bucket, layer_build),
+            synth=self.get_synth_step(cache_bucket),
             code_build_defaults=pipelines.CodeBuildOptions(
                 build_environment=codebuild.BuildEnvironment(
                     build_image=codebuild.LinuxBuildImage.STANDARD_7_0,
@@ -122,20 +109,16 @@ class Pipeline(Stack):
             branch=self.branch,
         )
 
-    def get_synth_step(
-        self, cache_bucket: aws_s3.Bucket, layer_build: pipelines.CodeBuildStep
-    ) -> pipelines.CodeBuildStep:
+    def get_synth_step(self, cache_bucket: aws_s3.Bucket) -> pipelines.CodeBuildStep:
         return pipelines.CodeBuildStep(
             "synth",
             input=self.connection,
-            additional_inputs={
-                "dist/layer": layer_build,
-            },
             env=dict(
                 OWNER=self.owner,
                 REPO=self.repo,
                 BRANCH=self.branch,
                 ARN=self.arn,
+                priviledged="true",
             ),
             cache=codebuild.Cache.bucket(cache_bucket),
             build_environment=codebuild.BuildEnvironment(
