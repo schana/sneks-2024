@@ -4,6 +4,7 @@ from typing import Any, Callable
 
 import aws_cdk
 from aws_cdk import aws_lambda as lambda_
+from aws_cdk.aws_ecr_assets import Platform
 from constructs import Construct
 
 Lambdas = namedtuple(
@@ -37,6 +38,7 @@ def get_handler(
         code=lambda_.DockerImageCode.from_image_asset(
             directory=".",
             cmd=[handler],
+            platform=Platform.LINUX_ARM64,
         ),
         architecture=lambda_.Architecture.ARM_64,
         timeout=timeout,
