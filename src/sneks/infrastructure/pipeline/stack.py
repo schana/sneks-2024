@@ -80,6 +80,7 @@ class Pipeline(Stack):
                     compute_type=codebuild.ComputeType.SMALL,
                 )
             ),
+            docker_enabled_for_synth=True,
         )
 
         self.deploy_stage = DeployStage(
