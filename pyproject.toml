@@ -21,6 +21,7 @@ dependencies = {file = ["requirements.txt"]}
 dev = {file = ["requirements-dev.txt"]}
 record = {file = ["requirements-record.txt"]}
 infra = {file = ["requirements-infra.txt"]}
+extra = {file = ["requirements-extra.txt"]}
 
 [project]
 name = "toroidal-sneks"

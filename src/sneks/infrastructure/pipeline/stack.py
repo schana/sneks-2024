@@ -104,7 +104,10 @@ class Pipeline(Stack):
             self,
             self.get_resource_name("deploy"),
         )
-        pipeline.add_stage(self.deploy_stage)
+        pipeline.add_stage(
+            stage=self.deploy_stage,
+            pre=[pipelines.ManualApprovalStep("deploy-app")],
+        )
 
     def get_resource_name(self, name: str) -> str:
         """
