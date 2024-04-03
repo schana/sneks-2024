@@ -80,6 +80,24 @@ class Pipeline(Stack):
                     compute_type=codebuild.ComputeType.SMALL,
                 )
             ),
+            asset_publishing_code_build_defaults=pipelines.CodeBuildOptions(
+                build_environment=codebuild.BuildEnvironment(
+                    environment_variables={
+                        "privileged": {"value": "true"},
+                    }
+                ),
+                partial_build_spec=codebuild.BuildSpec.from_object(
+                    {
+                        "phases": {
+                            "install": {
+                                "commands": [
+                                    "docker run --privileged --rm public.ecr.aws/eks-distro-build-tooling/binfmt-misc:qemu-v7.0.0 --install arm64",
+                                ]
+                            }
+                        }
+                    }
+                ),
+            ),
         )
 
         self.deploy_stage = DeployStage(
@@ -127,7 +145,6 @@ class Pipeline(Stack):
             ),
             install_commands=[
                 "pip install tox",
-                # "docker run --privileged --rm public.ecr.aws/eks-distro-build-tooling/binfmt-misc:qemu-v7.0.0 --install arm64",
             ],
             commands=[
                 "tox --parallel-no-spinner -m build",
